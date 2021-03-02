@@ -1,0 +1,168 @@
+@import url('http://fonts.cdnfonts.com/css/bahnschrift');
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(to right top, #6cc06f, #6cc0a7);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.mainWindow {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-gap: 1em;
+}
+
+/***** HEADER DIV *****/
+.header {
+    text-align: center;
+    grid-column: 1/4;
+}
+
+.header > h1 {
+    color: #076031;
+    margin: 0;
+    font-family: Arial Black, Gadget, sans-serif;
+    font-size: 70px;
+}
+
+.header > h3 {
+    color: #f1f9f1;
+    margin: 0;
+    font-weight: normal;
+    font-family: 'Bahnschrift', sans-serif;
+    text-shadow: 0.5px 0.5px 0.5px #353535;
+    font-size: 35px;
+}
+
+.header > hr {
+    margin-top: 1em;
+    border: none;
+    background-color: #f1f9f1;
+    height: 1px;
+}
+
+/***** CONTENT DIV *****/
+.content {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+/***** categories *****/
+.category {
+    padding: 0.4em;
+    margin: 0.4em;
+    background: linear-gradient(
+        to right bottom,
+        rgba(241, 249, 241, 0.7),
+        rgba(241, 249, 241, 0.3)
+    );
+    color: #3c795c;
+    font-family: 'Bahnschrift', sans-serif;
+    text-shadow: 0.5px 0.5px 0.5px #f1f9f1;
+    font-size: 30px;
+    text-align: center;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #f1f9f1;
+    user-select: none;
+}
+
+.category:hover {
+    cursor: pointer;
+    animation-name: category_hover;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+}
+
+@keyframes category_hover {
+    100% { background-color:rgba(241, 249, 241, 0.3) }
+}
+
+/***** items *****/
+.content > h1 {
+    color: #f1f9f1;
+    font-weight: normal;
+    margin-bottom: 0.3em;
+    font-family: 'Bahnschrift', sans-serif;
+    text-shadow: 0.5px 0.5px 0.5px #353535;
+}
+
+.content > pre {
+    white-space: pre-wrap;
+    text-align: justify;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #353535;
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.images {
+    margin-bottom: 1em;
+}
+
+.images > img {
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+    border-style: solid;
+    border-color: #353535;
+    border-width: 1.5px;
+    width: 250px;
+    height: 250px;
+    
+}
+
+/***** FOOTER DIV *****/
+.footer {
+    text-align: center;
+    grid-column: 1/4;
+    margin-bottom: 6em;
+}
+
+.footer > hr {
+    margin-bottom: 1em;
+    border: none;
+    background-color: #f1f9f1;
+    height: 1px;
+}
+
+.footer > a {
+    color: #f1f9f1;
+    text-shadow: 0.5px 0.5px 0.5px #353535;
+    font-family: 'Bahnschrift', sans-serif;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+/***** BACK BUTTON *****/
+#button {
+    background:rgba(241, 249, 241, 0.3);
+    color: #f1f9f1;
+    font-size: 30px;
+    font-weight: bold;
+    text-shadow: 0.5px 0.5px 0.5px #353535;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    position: fixed;
+    border: none;
+    outline: none;
+    padding: 0.5em;
+    border-top-style: solid;
+    border-top-color: #f1f9f1;
+    border-top-width: 1.5px;
+}
+
+#button:hover {
+    cursor: pointer;
+    animation-name: button_hover;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+}
+
+@keyframes button_hover {
+    100% { background-color:rgba(241, 249, 241, 0.5); }
+}
