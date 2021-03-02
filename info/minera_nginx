@@ -2,7 +2,7 @@ server {
     listen 80;
     server_name 127.0.0.1;
     index index.html;
-    root /home/kolu/src/minera/frontend;
+    root /home/kolu/src/minera/catalog;
 
     location / {
         try_files $uri $uri/ =404;

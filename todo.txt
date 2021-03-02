@@ -1,0 +1,11 @@
+each category has a folder with:
+    category.html
+    3 images
+
+when you add data
+you have two strings
+one before </body>
+where you append new data
+and one from </body> which
+you append at end of first
+string and send to frontend
