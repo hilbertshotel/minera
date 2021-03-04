@@ -14,8 +14,8 @@ async def categories():
 @app.post("/items")
 async def items(request: Request):
     # client_IP = request.client.host
-    category = await request.json()
-    response = queries.get_items(category)
+    category_id = await request.json()
+    response = queries.get_items(category_id)
     return response
 
 

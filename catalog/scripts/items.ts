@@ -42,11 +42,11 @@ const loadItems = (items: string[]) => {
 }
 
 
-const fetchItems = async (category: string) => {
+const fetchItems = async (category_id: number) => {
     const body = {
         method: "POST",
         header: {"content-type": "application/json"},
-        body: JSON.stringify(category)
+        body: JSON.stringify(category_id)
     }
     const request = await fetch(`${IP}/items`, body)
     if (request.ok) {

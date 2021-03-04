@@ -8,12 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const createCategory = (name, content) => {
-    const category = document.createElement("div");
-    category.className = "category";
-    category.innerHTML = name;
-    category.onclick = () => { fetchItems(name); };
-    content.appendChild(category);
+const createCategory = (category, content) => {
+    const [id, name] = category;
+    const div = document.createElement("div");
+    div.className = "category";
+    // div.id = `${id}`
+    div.innerHTML = name;
+    div.onclick = () => { fetchItems(id); };
+    content.appendChild(div);
 };
 const loadCategories = (categories) => {
     var _a;
@@ -25,8 +27,8 @@ const loadCategories = (categories) => {
         content.removeChild(content.firstChild);
     }
     // list all categories
-    for (const name of categories) {
-        createCategory(name, content);
+    for (const category of categories) {
+        createCategory(category, content);
     }
 };
 const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {

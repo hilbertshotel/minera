@@ -2,16 +2,10 @@ import psycopg2
 
 CONNECTION_STRING = "dbname=minera_catalog user=postgres"
 
-# get_items :: String -> IO [{String}]
-def get_items(category):
+# get_items :: Int -> IO [{String}]
+def get_items(category_id):
     connection = psycopg2.connect(CONNECTION_STRING) # try clause for connection
     cursor = connection.cursor()
-    
-    # get category id from database
-    query_string = "SELECT id FROM categories WHERE name = %s;"
-    query_params = (category,)
-    cursor.execute(query_string, query_params) # try clause for execute
-    category_id = cursor.fetchone()[0]
     
     # get items from database
     query_string = "SELECT name, description, img1, img2, img3 FROM items WHERE category_id = %s;"
@@ -34,12 +28,13 @@ def get_items(category):
     return response
 
 
-# get_categories :: [String]
+# get_categories :: IO [(Int, String)]
 def get_categories():
     connection = psycopg2.connect(CONNECTION_STRING) # try clause for connection
     cursor = connection.cursor()
 
-    cursor.execute("SELECT name FROM categories;") # try clause for connection
-    categories = [x[0] for x in cursor.fetchall()]
+    cursor.execute("SELECT id, name FROM categories;") # try clause for connection
+    response = cursor.fetchall()
+
     connection.close()
-    return categories
+    return response

@@ -41,11 +41,11 @@ const loadItems = (items) => {
     backButton.onclick = fetchCategories;
     document.getElementById("mainWindow").appendChild(backButton);
 };
-const fetchItems = (category) => __awaiter(void 0, void 0, void 0, function* () {
+const fetchItems = (category_id) => __awaiter(void 0, void 0, void 0, function* () {
     const body = {
         method: "POST",
         header: { "content-type": "application/json" },
-        body: JSON.stringify(category)
+        body: JSON.stringify(category_id)
     };
     const request = yield fetch(`${IP}/items`, body);
     if (request.ok) {

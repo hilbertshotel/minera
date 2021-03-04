@@ -1,13 +1,15 @@
-const createCategory = (name: string, content: HTMLElement) => {
-  const category = document.createElement("div")
-  category.className = "category"
-  category.innerHTML = name
-  category.onclick = () => { fetchItems(name) }
-  content.appendChild(category)
+const createCategory = (category: [number, string], content: HTMLElement) => {
+  const [id, name] = category;
+  const div = document.createElement("div")
+  div.className = "category"
+  // div.id = `${id}`
+  div.innerHTML = name
+  div.onclick = () => { fetchItems(id) }
+  content.appendChild(div)
 }
 
 
-const loadCategories = (categories: string[]) => {
+const loadCategories = (categories: [[number, string]]) => {
   const content = document.getElementById("content")!
 
   // remove back button
@@ -19,8 +21,8 @@ const loadCategories = (categories: string[]) => {
   }
 
   // list all categories
-  for (const name of categories) {
-    createCategory(name, content)
+  for (const category of categories) {
+    createCategory(category, content)
   }
 }
 
