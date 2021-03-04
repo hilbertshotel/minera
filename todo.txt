@@ -1,11 +1,4 @@
-each category has a folder with:
-    category.html
-    3 images
+database backup on AWS S3?
+images backup on AWS S3?
 
-when you add data
-you have two strings
-one before </body>
-where you append new data
-and one from </body> which
-you append at end of first
-string and send to frontend
+API error logging

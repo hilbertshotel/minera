@@ -1,0 +1,30 @@
+NGINX:
+    /etc/nginx/sites-available/
+    sudo nginx -t
+    sudo systemctl reload nginx
+
+    create symlink:
+    sudo ln -s /etc/nginx/sites-available/minera /etc/nginx/sites-enabled/minera
+
+    ps -A | grep nginx
+    kill <pid>
+    sudo systemctl start nginx
+
+server {
+    listen 80;
+    server_name 127.0.0.1;
+    index index.html;
+    root /home/kolu/src/minera/catalog;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location /categories {
+        proxy_pass "http://127.0.0.1:5000";
+    }
+    
+    location /items {
+        proxy_pass "http://127.0.0.1:5000";
+    }
+}

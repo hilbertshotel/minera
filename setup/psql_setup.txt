@@ -1,0 +1,7 @@
+POSTGRES:
+    /etc/postgresql/../pg_hba.conf
+    set local pipe connection for postgres user to trust (for no password)
+    sudo service postgresql restart
+    psql -U postgres
+
+    \i <path to minera_catalog.sql>
