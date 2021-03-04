@@ -1,3 +1,0 @@
-analytics dashboard
-with hard coded login
-and database storage

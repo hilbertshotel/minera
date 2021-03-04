@@ -1,1 +1,0 @@
-editor tool for uploading catalog data

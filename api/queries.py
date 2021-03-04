@@ -1,8 +1,10 @@
 import psycopg2
 
-# get_items :: String -> [{String}]
+CONNECTION_STRING = "dbname=minera_catalog user=postgres"
+
+# get_items :: String -> IO [{String}]
 def get_items(category):
-    connection = psycopg2.connect(dbname="minera_catalog", user="postgres") # try clause for connection
+    connection = psycopg2.connect(CONNECTION_STRING) # try clause for connection
     cursor = connection.cursor()
     
     # get category id from database
@@ -34,7 +36,7 @@ def get_items(category):
 
 # get_categories :: [String]
 def get_categories():
-    connection = psycopg2.connect(dbname="minera_catalog", user="postgres") # try clause for connection
+    connection = psycopg2.connect(CONNECTION_STRING) # try clause for connection
     cursor = connection.cursor()
 
     cursor.execute("SELECT name FROM categories;") # try clause for connection
