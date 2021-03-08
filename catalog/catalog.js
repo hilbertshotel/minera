@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+//////////////////// ITEMS ////////////////////
 const createItem = (item, content) => {
     const titleTag = document.createElement("h1");
     titleTag.innerHTML = item.name;
@@ -58,3 +59,39 @@ const fetchItems = (category_id) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
 });
+//////////////////// CATEGORIES ////////////////////
+const createCategory = (category, content) => {
+    const [id, name] = category;
+    const div = document.createElement("div");
+    div.className = "category";
+    // div.id = `${id}`
+    div.innerHTML = name;
+    div.onclick = () => { fetchItems(id); };
+    content.appendChild(div);
+};
+const loadCategories = (categories) => {
+    var _a;
+    const content = document.getElementById("content");
+    // remove back button
+    (_a = document.getElementById("button")) === null || _a === void 0 ? void 0 : _a.remove();
+    // clear content div
+    while (content.firstChild) {
+        content.removeChild(content.firstChild);
+    }
+    // list all categories
+    for (const category of categories) {
+        createCategory(category, content);
+    }
+};
+const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {
+    const request = yield fetch(`${IP}/categories`);
+    if (request.ok) {
+        const data = yield request.json();
+        loadCategories(data);
+    }
+});
+//////////////////// MAIN ////////////////////
+const IP = "http://127.0.0.1";
+fetchCategories();
+let isLogged = false;
+isLogged = true;

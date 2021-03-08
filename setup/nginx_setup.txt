@@ -13,7 +13,7 @@ NGINX:
 server {
     listen 80;
     server_name 127.0.0.1;
-    index index.html;
+    index catalog.html;
     root /home/kolu/src/minera/catalog;
 
     location / {
