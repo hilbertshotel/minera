@@ -25,7 +25,7 @@ const loadItems = (items: string[]) => {
     const content = document.getElementById("content")!
 
     // clear content div
-    while(content.firstChild){
+    while(content.firstChild) {
         content.removeChild(content.firstChild)
     }
 
@@ -100,5 +100,3 @@ const fetchCategories = async () => {
 //////////////////// MAIN ////////////////////
 const IP = "http://127.0.0.1"
 fetchCategories()
-let isLogged = false
-isLogged = true
