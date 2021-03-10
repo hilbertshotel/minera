@@ -86,8 +86,8 @@ const loadCategories = (categories) => {
 const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {
     const request = yield fetch(`${IP}/categories`);
     if (request.ok) {
-        const data = yield request.json();
-        loadCategories(data);
+        const categories = yield request.json();
+        loadCategories(categories);
     }
 });
 //////////////////// MAIN ////////////////////

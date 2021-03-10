@@ -29,5 +29,12 @@ async def login(request: Request):
     return response
 
 
+@app.put("/edit_category")
+async def login(request: Request):
+    new_name, old_name = await request.json()
+    response = editor.edit_category(new_name, old_name)
+    return response
+
+
 if __name__ == '__main__':
     uvicorn.run("api:app", host="127.0.0.1", port=5000, reload=True)

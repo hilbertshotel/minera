@@ -1,27 +1,25 @@
 import bcrypt
 import psycopg2
 
+CONNECTION_STRING = "dbname=minera_catalog user=postgres"
+
 def main():
-    password = b"R0m1K0l4"
-    hash = bcrypt.hashpw(password, bcrypt.gensalt())
-    hashed_password = hash.decode("UTF-8")
-    
-    CONNECTION_STRING = "dbname=minera_catalog user=postgres"
+    password = b"asd"
+    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt()).decode("UTF-8")
 
     try:
         connection = psycopg2.connect(CONNECTION_STRING)
+        cursor = connection.cursor()
     except:
         print("connection failure")
         return
 
-    cursor = connection.cursor()
-
     query_string = "INSERT INTO login (password) VALUES (%s);"
-    query_params = (password.decode("ascii"),)
-    # COMMIT?
+    query_params = (hashed_password,)
 
     try:
         cursor.execute(query_string, query_params)
+        connection.commit()
     except:
         print("execution error")
         return
@@ -29,4 +27,3 @@ def main():
     print("ok")
 
 main()
-

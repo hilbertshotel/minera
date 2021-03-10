@@ -91,8 +91,8 @@ const loadCategories = (categories: [[number, string]]) => {
 const fetchCategories = async () => {
     const request = await fetch(`${IP}/categories`)
     if (request.ok) {
-        const data = await request.json()
-        loadCategories(data)
+        const categories = await request.json()
+        loadCategories(categories)
     }
 }
   

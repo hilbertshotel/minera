@@ -1,0 +1,12 @@
+NGINX:
+    /etc/nginx/sites-available/
+    sudo nginx -t
+    sudo systemctl reload nginx
+
+    create symlink:
+    sudo ln -s /etc/nginx/sites-available/minera /etc/nginx/sites-enabled/minera
+
+    ps -A | grep nginx
+    kill <pid>
+    sudo systemctl start nginx
+

@@ -2,7 +2,7 @@
 
 CREATE TABLE categories (
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE
+    name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE items (
@@ -15,7 +15,8 @@ CREATE TABLE items (
 );
 
 CREATE TABLE login (
-    password VARCHAR(300) NOT NULL
+    password TEXT NOT NULL,
+    attempts INT NOT NULL
 );
 
 -- INSERT INTO categories (name) VALUES ('Категория 1');

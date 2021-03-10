@@ -9,13 +9,14 @@ const verifyPassword = async (password: string, output: HTMLElement) => {
     
     if (request.ok) {
         const status = await request.json()
-        if (status.msg === "error") {
-            output.innerHTML = "ГРЕШНА ПАРОЛА"
+        if (status.msg !== "ok") {
+            output.innerHTML = status.msg
+            const input = <HTMLInputElement>document.getElementById("password")!
+            input.value = ""
         } else {
             loadEditor()
         }
     }
-
 }
 
 
@@ -30,11 +31,8 @@ const validateInput = (output: HTMLElement) => {
 
 
 const openLogin = () => {
-    const mainWindow = document.getElementById("main")!
+    const content = document.getElementById("content")!
 
-    const div = document.createElement("div")
-    div.className = "login"
-    
     const input = document.createElement("input")
     input.type = "password"
     input.id = "password"
@@ -43,13 +41,13 @@ const openLogin = () => {
     
     const button = document.createElement("button")
     button.innerHTML = "ВХОД"
-    const p = document.createElement("p")
-    button.onclick = () => { validateInput(p) }
+    const output = document.createElement("p")
+    output.id = "output"
+    button.onclick = () => { validateInput(output) }
     
-    div.appendChild(input)
-    div.appendChild(button)
-    div.appendChild(p)
-    mainWindow.appendChild(div)
+    content.appendChild(input)
+    content.appendChild(button)
+    content.appendChild(output)
 
     input.focus()
 }
