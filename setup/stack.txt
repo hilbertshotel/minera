@@ -7,10 +7,7 @@ STORAGE:
 postgresql
 
 BACKEND:
-python3
-    fastapi
-    uvicorn
-    psycopg2
+golang
 
 FRONTEND:
 typescript

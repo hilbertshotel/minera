@@ -1,4 +1,0 @@
-database backup on AWS S3?
-images backup on AWS S3?
-
-API error logging dashboard

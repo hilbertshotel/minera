@@ -1,27 +1,26 @@
-//////////////////// ITEMS ////////////////////
-const createItem = (item: any, content: HTMLElement) => {
+// ITEMS
+const createItem = (item: Item, content: HTMLElement) => {
     const titleTag = document.createElement("h1")
-    titleTag.innerHTML = item.name
+    titleTag.innerHTML = item.Name
     content.appendChild(titleTag)
 
     const textTag = document.createElement("pre")
-    textTag.innerHTML = item.description
+    textTag.innerHTML = item.Description
     content.appendChild(textTag)
 
     const imagesTag = document.createElement("div")
     imagesTag.className = "images"
     content.appendChild(imagesTag)
 
-    for (const img of item.images) {
+    for (const image of item.Images) {
         const imgTag = document.createElement("img")
-        imgTag.src = img
+        imgTag.src = image
         imagesTag.appendChild(imgTag)
     }
-    
 }
 
 
-const loadItems = (items: string[]) => {
+const loadItems = (items: Item[]) => {
     const content = document.getElementById("content")!
 
     // clear content div
@@ -49,7 +48,7 @@ const fetchItems = async (category_id: number) => {
         header: {"content-type": "application/json"},
         body: JSON.stringify(category_id)
     }
-    const request = await fetch(`${IP}/items`, body)
+    const request = await fetch(`${IP}/LoadItems`, body)
     if (request.ok) {
         const items = await request.json()
         if (items === null) { loadItems([]) }
@@ -58,19 +57,19 @@ const fetchItems = async (category_id: number) => {
 }
 
 
-//////////////////// CATEGORIES ////////////////////
-const createCategory = (category: [number, string], content: HTMLElement) => {
-    const [id, name] = category;
+// CATEGORIES
+const createCategory = (category: Category, content: HTMLElement) => {
+    const id = category.Id;
+    const name = category.Name;
     const div = document.createElement("div")
     div.className = "category"
-    // div.id = `${id}`
     div.innerHTML = name
     div.onclick = () => { fetchItems(id) }
     content.appendChild(div)
 }
   
   
-const loadCategories = (categories: [[number, string]]) => {
+const loadCategories = (categories: Category[]) => {
     const content = document.getElementById("content")!
   
     // remove back button
@@ -89,7 +88,7 @@ const loadCategories = (categories: [[number, string]]) => {
   
   
 const fetchCategories = async () => {
-    const request = await fetch(`${IP}/categories`)
+    const request = await fetch(`${IP}/LoadCategories`)
     if (request.ok) {
         const categories = await request.json()
         loadCategories(categories)
@@ -97,6 +96,17 @@ const fetchCategories = async () => {
 }
   
 
-//////////////////// MAIN ////////////////////
+// MAIN
+interface Item {
+    Name: string,
+    Description: string,
+    Images: string[]
+}
+
+interface Category {
+    Id: number,
+    Name: string
+}
+
 const IP = "http://127.0.0.1"
 fetchCategories()

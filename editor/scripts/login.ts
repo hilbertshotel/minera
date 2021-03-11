@@ -5,7 +5,7 @@ const verifyPassword = async (password: string, output: HTMLElement) => {
         body: JSON.stringify(password)
     }
 
-    const request = await fetch(`${IP}/login`, body)
+    const request = await fetch(`${IP}/VerifyPassword`, body)
     
     if (request.ok) {
         const status = await request.json()

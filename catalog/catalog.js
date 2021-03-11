@@ -8,20 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-//////////////////// ITEMS ////////////////////
+// ITEMS
 const createItem = (item, content) => {
     const titleTag = document.createElement("h1");
-    titleTag.innerHTML = item.name;
+    titleTag.innerHTML = item.Name;
     content.appendChild(titleTag);
     const textTag = document.createElement("pre");
-    textTag.innerHTML = item.description;
+    textTag.innerHTML = item.Description;
     content.appendChild(textTag);
     const imagesTag = document.createElement("div");
     imagesTag.className = "images";
     content.appendChild(imagesTag);
-    for (const img of item.images) {
+    for (const image of item.Images) {
         const imgTag = document.createElement("img");
-        imgTag.src = img;
+        imgTag.src = image;
         imagesTag.appendChild(imgTag);
     }
 };
@@ -48,7 +48,7 @@ const fetchItems = (category_id) => __awaiter(void 0, void 0, void 0, function* 
         header: { "content-type": "application/json" },
         body: JSON.stringify(category_id)
     };
-    const request = yield fetch(`${IP}/items`, body);
+    const request = yield fetch(`${IP}/LoadItems`, body);
     if (request.ok) {
         const items = yield request.json();
         if (items === null) {
@@ -59,12 +59,12 @@ const fetchItems = (category_id) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
 });
-//////////////////// CATEGORIES ////////////////////
+// CATEGORIES
 const createCategory = (category, content) => {
-    const [id, name] = category;
+    const id = category.Id;
+    const name = category.Name;
     const div = document.createElement("div");
     div.className = "category";
-    // div.id = `${id}`
     div.innerHTML = name;
     div.onclick = () => { fetchItems(id); };
     content.appendChild(div);
@@ -84,12 +84,11 @@ const loadCategories = (categories) => {
     }
 };
 const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {
-    const request = yield fetch(`${IP}/categories`);
+    const request = yield fetch(`${IP}/LoadCategories`);
     if (request.ok) {
         const categories = yield request.json();
         loadCategories(categories);
     }
 });
-//////////////////// MAIN ////////////////////
 const IP = "http://127.0.0.1";
 fetchCategories();

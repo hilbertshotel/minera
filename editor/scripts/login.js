@@ -14,7 +14,7 @@ const verifyPassword = (password, output) => __awaiter(void 0, void 0, void 0, f
         header: { "content-type": "application/json" },
         body: JSON.stringify(password)
     };
-    const request = yield fetch(`${IP}/login`, body);
+    const request = yield fetch(`${IP}/VerifyPassword`, body);
     if (request.ok) {
         const status = yield request.json();
         if (status.msg !== "ok") {
