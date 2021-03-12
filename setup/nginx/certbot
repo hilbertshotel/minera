@@ -1,0 +1,5 @@
+sudo apt install python3-certbot-nginx
+sudo certbot --nginx -d catalog.minera.bg
+
+test auto renewal:
+sudo certbot renew --dry-run

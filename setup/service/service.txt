@@ -1,0 +1,15 @@
+store in:
+/lib/systemd/system/catalog.service
+
+reload systemd:
+sudo systemctl daemon-reload
+
+start and restart service:
+sudo systemctl start catalog.service
+sudo systemctl restart catalog.service
+
+enable during startup:
+sudo systemctl enable catalog.service
+
+check status:
+sydo systemctl status catalog.service
