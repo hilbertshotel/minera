@@ -74,7 +74,7 @@ const loadCategories = (categories: string[][], content: HTMLElement) => {
 
 
 const getCategories = async (content: HTMLElement) => {
-    const request = await fetch(`${IP}/categories`)
+    const request = await fetch(`${IP}/LoadCategories`)
     if (request.ok) {
         const categories = await request.json()
         loadCategories(categories, content)
@@ -91,3 +91,6 @@ const loadEditor = () => {
 
     getCategories(content)
 }
+
+
+loadEditor()

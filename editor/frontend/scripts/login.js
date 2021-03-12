@@ -17,13 +17,15 @@ const verifyPassword = (password, output) => __awaiter(void 0, void 0, void 0, f
     const request = yield fetch(`${IP}/VerifyPassword`, body);
     if (request.ok) {
         const status = yield request.json();
-        if (status.msg !== "ok") {
-            output.innerHTML = status.msg;
+        if (status !== "ok") {
+            output.innerHTML = status;
             const input = document.getElementById("password");
             input.value = "";
         }
         else {
-            loadEditor();
+            const script = document.createElement("script");
+            script.src = "scripts/editor.js";
+            document.body.appendChild(script);
         }
     }
 });

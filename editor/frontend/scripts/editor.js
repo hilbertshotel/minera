@@ -62,7 +62,7 @@ const loadCategories = (categories, content) => {
     content.appendChild(output);
 };
 const getCategories = (content) => __awaiter(void 0, void 0, void 0, function* () {
-    const request = yield fetch(`${IP}/categories`);
+    const request = yield fetch(`${IP}/LoadCategories`);
     if (request.ok) {
         const categories = yield request.json();
         loadCategories(categories, content);
@@ -75,3 +75,4 @@ const loadEditor = () => {
     }
     getCategories(content);
 };
+loadEditor();

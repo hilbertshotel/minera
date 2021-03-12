@@ -9,12 +9,14 @@ const verifyPassword = async (password: string, output: HTMLElement) => {
     
     if (request.ok) {
         const status = await request.json()
-        if (status.msg !== "ok") {
-            output.innerHTML = status.msg
+        if (status !== "ok") {
+            output.innerHTML = status
             const input = <HTMLInputElement>document.getElementById("password")!
             input.value = ""
         } else {
-            loadEditor()
+            const script = document.createElement("script")
+            script.src = "scripts/editor.js"
+            document.body.appendChild(script)
         }
     }
 }

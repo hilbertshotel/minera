@@ -1,8 +1,0 @@
-VENV:
-    python3 -m venv <name>
-    source <name>/bin/activate
-    deactivate
-
-pip3 freeze
-pip3 install requirements.txt
-

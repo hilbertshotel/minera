@@ -3,18 +3,17 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"api/handlers"
+	"catalog/handlers"
 )
 
 var IP = "127.0.0.1:5151"
 
 func main() {
-	// catalog handlers
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/", fs)
+
 	http.HandleFunc("/LoadCategories", handlers.LoadCategories)
 	http.HandleFunc("/LoadItems", handlers.LoadItems)
-
-	// editor handlers
-	http.HandleFunc("/VerifyPassword", handlers.VerifyPassword)
 
 	fmt.Println("Now serving @", IP)
 	http.ListenAndServe(IP, nil)

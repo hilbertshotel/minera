@@ -1,11 +1,9 @@
 server {
     listen 80;
     server_name 127.0.0.1;
-    index catalog.html;
-    root /home/kolu/src/minera/catalog;
 
     location / {
-        try_files $uri $uri/ =404;
+        proxy_pass "http://127.0.0.1:5151";
     }
 
     location /LoadCategories {
@@ -14,14 +12,5 @@ server {
     
     location /LoadItems {
         proxy_pass "http://127.0.0.1:5151";
-    }
-
-    location /Login {
-        proxy_pass "http://127.0.0.1:5151";
-    }
-
-    location /editor {
-        index editor.html;
-        root /home/kolu/src/minera;
     }
 }
