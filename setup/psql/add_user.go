@@ -10,11 +10,13 @@ import (
 var connStr string = "user=postgres dbname=minera_catalog host=/run/postgresql"
 
 func main() {
-	password := []byte("asd")
-
 	// generate hash
+	password := []byte("password")
 	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
     if err != nil { fmt.Println(err); return }
+
+	username := "username"
+	attempts := 0
 
 	// connect to database
 	db, err := sql.Open("postgres", connStr)
@@ -22,7 +24,8 @@ func main() {
 	defer db.Close()
 
 	// insert password into database
-	_, err = db.Exec(`INSERT INTO login (password) VALUES ($1)`, string(hash)) 
+	_, err = db.Exec(`INSERT INTO login (username, password, attempts)
+	VALUES ($1, $2, $3)`, username, string(hash), attempts) 
     if err != nil { fmt.Println(err); return }
 
 	fmt.Println("ok")

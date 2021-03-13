@@ -9,61 +9,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 // ITEMS
-const createItem = (item, content) => {
-    const titleTag = document.createElement("h1");
+const insertItem = (item, content) => {
+    const titleTag = newElement("h1");
     titleTag.innerHTML = item.Name;
     content.appendChild(titleTag);
-    const textTag = document.createElement("pre");
+    const textTag = newElement("pre");
     textTag.innerHTML = item.Description;
     content.appendChild(textTag);
-    const imagesTag = document.createElement("div");
+    const imagesTag = newElement("div");
     imagesTag.className = "images";
     content.appendChild(imagesTag);
     for (const image of item.Images) {
-        const imgTag = document.createElement("img");
+        const imgTag = newImgElement();
         imgTag.src = image;
         imagesTag.appendChild(imgTag);
     }
 };
 const loadItems = (items) => {
-    const content = document.getElementById("content");
-    // clear content div
-    while (content.firstChild) {
-        content.removeChild(content.firstChild);
-    }
-    // list all items
+    const content = getById("content");
+    clear(content);
     for (const item of items) {
-        createItem(item, content);
+        insertItem(item, content);
     }
-    // create back button
-    const backButton = document.createElement("button");
+    const backButton = newElement("button");
     backButton.innerHTML = "ОБРАТНО";
     backButton.id = "button";
     backButton.onclick = fetchCategories;
-    document.getElementById("mainWindow").appendChild(backButton);
+    getById("mainWindow").appendChild(backButton);
 };
-const fetchItems = (category_id) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = {
-        method: "POST",
-        header: { "content-type": "application/json" },
-        body: JSON.stringify(category_id)
-    };
-    const request = yield fetch(`${IP}/LoadItems`, body);
+const fetchItems = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = `${IP}/LoadItems`;
+    const data = newPackage("POST", id);
+    const request = yield fetch(url, data);
     if (request.ok) {
         const items = yield request.json();
         if (items === null) {
             loadItems([]);
+            return;
         }
-        else {
-            loadItems(items);
-        }
+        loadItems(items);
     }
 });
 // CATEGORIES
-const createCategory = (category, content) => {
+const insertCategory = (category, content) => {
     const id = category.Id;
     const name = category.Name;
-    const div = document.createElement("div");
+    const div = newElement("div");
     div.className = "category";
     div.innerHTML = name;
     div.onclick = () => { fetchItems(id); };
@@ -71,20 +62,16 @@ const createCategory = (category, content) => {
 };
 const loadCategories = (categories) => {
     var _a;
-    const content = document.getElementById("content");
-    // remove back button
-    (_a = document.getElementById("button")) === null || _a === void 0 ? void 0 : _a.remove();
-    // clear content div
-    while (content.firstChild) {
-        content.removeChild(content.firstChild);
-    }
-    // list all categories
+    const content = getById("content");
+    (_a = getById("button")) === null || _a === void 0 ? void 0 : _a.remove();
+    clear(content);
     for (const category of categories) {
-        createCategory(category, content);
+        insertCategory(category, content);
     }
 };
 const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {
-    const request = yield fetch(`${IP}/LoadCategories`);
+    const url = `${IP}/LoadCategories`;
+    const request = yield fetch(url);
     if (request.ok) {
         const categories = yield request.json();
         loadCategories(categories);

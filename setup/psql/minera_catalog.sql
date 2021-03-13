@@ -13,7 +13,9 @@ CREATE TABLE items (
 );
 
 CREATE TABLE login (
-    password TEXT NOT NULL
+    username VARCHAR(50) NOT NULL,
+    password TEXT NOT NULL,
+    attempts INT NOT NULL
 );
 
 INSERT INTO categories (name) VALUES ('Категория 1');

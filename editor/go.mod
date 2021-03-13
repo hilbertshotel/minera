@@ -1,4 +1,4 @@
-module api
+module editor
 
 go 1.13
 

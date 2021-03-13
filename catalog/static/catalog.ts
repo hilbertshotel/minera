@@ -1,19 +1,19 @@
 // ITEMS
-const createItem = (item: Item, content: HTMLElement) => {
-    const titleTag = document.createElement("h1")
+const insertItem = (item: Item, content: HTMLElement) => {
+    const titleTag = newElement("h1")
     titleTag.innerHTML = item.Name
     content.appendChild(titleTag)
 
-    const textTag = document.createElement("pre")
+    const textTag = newElement("pre")
     textTag.innerHTML = item.Description
     content.appendChild(textTag)
 
-    const imagesTag = document.createElement("div")
+    const imagesTag = newElement("div")
     imagesTag.className = "images"
     content.appendChild(imagesTag)
 
     for (const image of item.Images) {
-        const imgTag = document.createElement("img")
+        const imgTag = newImgElement()
         imgTag.src = image
         imagesTag.appendChild(imgTag)
     }
@@ -21,47 +21,39 @@ const createItem = (item: Item, content: HTMLElement) => {
 
 
 const loadItems = (items: Item[]) => {
-    const content = document.getElementById("content")!
+    const content = getById("content")!
+    clear(content)
 
-    // clear content div
-    while(content.firstChild) {
-        content.removeChild(content.firstChild)
-    }
-
-    // list all items
     for (const item of items) {
-        createItem(item, content)
+        insertItem(item, content)
     }
 
-    // create back button
-    const backButton = document.createElement("button")
+    const backButton = newElement("button")
     backButton.innerHTML = "ОБРАТНО"
     backButton.id = "button"
     backButton.onclick = fetchCategories
-    document.getElementById("mainWindow")!.appendChild(backButton)
+    getById("mainWindow")!.appendChild(backButton)
 }
 
 
-const fetchItems = async (category_id: number) => {
-    const body = {
-        method: "POST",
-        header: {"content-type": "application/json"},
-        body: JSON.stringify(category_id)
-    }
-    const request = await fetch(`${IP}/LoadItems`, body)
+const fetchItems = async (id: number) => {
+    const url = `${IP}/LoadItems`
+    const data = newPackage("POST", id)
+
+    const request = await fetch(url, data)
     if (request.ok) {
         const items = await request.json()
-        if (items === null) { loadItems([]) }
-        else { loadItems(items) }
+        if (items === null) { loadItems([]); return }
+        loadItems(items)
     }
 }
 
 
 // CATEGORIES
-const createCategory = (category: Category, content: HTMLElement) => {
+const insertCategory = (category: Category, content: HTMLElement) => {
     const id = category.Id;
     const name = category.Name;
-    const div = document.createElement("div")
+    const div = newElement("div")
     div.className = "category"
     div.innerHTML = name
     div.onclick = () => { fetchItems(id) }
@@ -70,25 +62,19 @@ const createCategory = (category: Category, content: HTMLElement) => {
   
   
 const loadCategories = (categories: Category[]) => {
-    const content = document.getElementById("content")!
-  
-    // remove back button
-    document.getElementById("button")?.remove()
-  
-    // clear content div
-    while(content.firstChild){
-        content.removeChild(content.firstChild)
-    }
-  
-    // list all categories
+    const content = getById("content")
+    getById("button")?.remove()
+    clear(content)
+    
     for (const category of categories) {
-        createCategory(category, content)
+        insertCategory(category, content)
     }
 }
   
   
 const fetchCategories = async () => {
-    const request = await fetch(`${IP}/LoadCategories`)
+    const url = `${IP}/LoadCategories`
+    const request = await fetch(url)
     if (request.ok) {
         const categories = await request.json()
         loadCategories(categories)
