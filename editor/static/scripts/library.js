@@ -5,14 +5,10 @@ const getById = (id) => {
 const getInputWithId = (id) => {
     return document.getElementById(id);
 };
-const newElement = (type) => {
-    return document.createElement(type);
-};
-const newInputElement = () => {
-    return document.createElement("input");
-};
-const newScriptElement = () => {
-    return document.createElement("script");
+const addScript = (source) => {
+    const script = document.createElement("script");
+    script.src = source;
+    document.body.appendChild(script);
 };
 const newPackage = (method, data) => {
     return {

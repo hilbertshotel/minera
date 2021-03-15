@@ -1,58 +1,63 @@
-const VerifyUser = async (userData: Object, output: HTMLElement) => {
-    const url = `${IP}/VerifyUser`
+// DATA
+interface Item {
+    Name: string,
+    Description: string,
+    Images: string[]
+}
+
+interface Category {
+    Id: number,
+    Name: string
+}
+
+
+// LOGIN
+const verifyUser = async (userData: Object, output: HTMLElement) => {
     const data = newPackage("POST", userData)
-    const request = await fetch(url, data)
+    const request = await fetch(`${IP}/VerifyUser`, data)
     
     if (request.ok) {
         const status = await request.json()
         if (status !== "ok") {
             output.innerHTML = status
-            getInputWithId("password").value = ""
+            getInputWithId("pass").value = ""
             return
         }
-        const script = newScriptElement()
-        script.src = "scripts/editor.js"
-        document.body.appendChild(script)
+        // THIS IS A SECURITY RISK WHICH NEEDS TO BE FIXED
+        addScript("scripts/editor.js")
     }
 }
 
 
-const validateInput = (output: HTMLElement) => {
+const validateInput = () => {
+    const output = getById("output")
     output.innerHTML = ""
-    const username = getInputWithId("username").value
-    const password = getInputWithId("password").value
+    const username = getInputWithId("user").value
+    const password = getInputWithId("pass").value
     if (!username) { output.innerHTML = "МОЛЯ ВЪВЕДЕТЕ ПОТРЕБИТЕЛ"; return }
     if (!password) { output.innerHTML = "МОЛЯ ВЪВЕДЕТЕ ПАРОЛА"; return }
     const data = { "Username": username, "Password": password }
-    VerifyUser(data, output)
+    verifyUser(data, output)
 }
 
 
 const openLogin = () => {
     const content = getById("content")
 
-    const usernameInput = newInputElement()
-    usernameInput.type = "username"
-    usernameInput.id = "username"
-    usernameInput.maxLength = 20
-    usernameInput.placeholder = "Потребител"
+    const userInput = `<input id="user" maxlength="20" placeholder="Потребител">`
+    const passInput = `<input type="password" id="pass" maxlength="20" placeholder="Парола">`
+    const button = `<button onclick="validateInput()">ВХОД</button>`
+    const output = `<p id="output"></p>`
 
-    const passwordInput = newInputElement()
-    passwordInput.type = "password"
-    passwordInput.id = "password"
-    passwordInput.maxLength = 20
-    passwordInput.placeholder = "Парола"
-    
-    const button = newElement("button")
-    button.innerHTML = "ВХОД"
-    const output = newElement("p")
-    output.id = "output"
-    button.onclick = () => { validateInput(output) }
-    
-    content.appendChild(usernameInput)
-    content.appendChild(passwordInput)
-    content.appendChild(button)
-    content.appendChild(output)
+    content.innerHTML += userInput
+    content.innerHTML += passInput
+    content.innerHTML += button
+    content.innerHTML += output
 
-    usernameInput.focus()
+    getById("user").focus()
 }
+
+
+// MAIN
+const IP = "http://127.0.0.1:5252"
+openLogin()

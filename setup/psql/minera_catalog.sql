@@ -18,7 +18,7 @@ CREATE TABLE login (
     attempts INT NOT NULL
 );
 
-INSERT INTO categories (name) VALUES ('Категория 1');
+INSERT INTO categories (name) VALUES ('Category 1');
 
 INSERT INTO items (category_id, name, description, images)
-VALUES (1, 'Артикул 1', 'Описание на артикул 1', ARRAY [ 'images/img1.jpg', 'images/img2.jpg', 'images/img3.jpg']);
+VALUES (1, 'Item 1', 'Description for item 1', ARRAY [ 'images/img1.jpg', 'images/img2.jpg', 'images/img3.jpg']);

@@ -7,16 +7,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var connStr string = "user=postgres dbname=minera_catalog host=/run/postgresql"
+var connStr string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql"
 
 func main() {
+	// data
+	username := "asd"
+	password := []byte("asd")
+	attempts := 0
+
 	// generate hash
-	password := []byte("password")
 	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
     if err != nil { fmt.Println(err); return }
-
-	username := "username"
-	attempts := 0
 
 	// connect to database
 	db, err := sql.Open("postgres", connStr)

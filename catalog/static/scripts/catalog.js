@@ -10,19 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 // ITEMS
 const insertItem = (item, content) => {
-    const titleTag = newElement("h1");
-    titleTag.innerHTML = item.Name;
-    content.appendChild(titleTag);
-    const textTag = newElement("pre");
-    textTag.innerHTML = item.Description;
-    content.appendChild(textTag);
+    const titleTag = `<h1>${item.Name}</h1>`;
+    content.innerHTML += titleTag;
+    const textTag = `<pre>${item.Description}</pre>`;
+    content.innerHTML += textTag;
     const imagesTag = newElement("div");
     imagesTag.className = "images";
     content.appendChild(imagesTag);
     for (const image of item.Images) {
-        const imgTag = newImgElement();
-        imgTag.src = image;
-        imagesTag.appendChild(imgTag);
+        const imgTag = `<img src="${image}">`;
+        imagesTag.innerHTML += imgTag;
     }
 };
 const loadItems = (items) => {
@@ -31,16 +28,12 @@ const loadItems = (items) => {
     for (const item of items) {
         insertItem(item, content);
     }
-    const backButton = newElement("button");
-    backButton.innerHTML = "ОБРАТНО";
-    backButton.id = "button";
-    backButton.onclick = fetchCategories;
-    getById("mainWindow").appendChild(backButton);
+    const backButton = `<button id="button" onclick="fetchCategories()">ОБРАТНО</button>`;
+    content.innerHTML += backButton;
 };
 const fetchItems = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const url = `${IP}/LoadItems`;
     const data = newPackage("POST", id);
-    const request = yield fetch(url, data);
+    const request = yield fetch(`${IP}/LoadItems`, data);
     if (request.ok) {
         const items = yield request.json();
         if (items === null) {
@@ -52,30 +45,24 @@ const fetchItems = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 // CATEGORIES
 const insertCategory = (category, content) => {
-    const id = category.Id;
-    const name = category.Name;
-    const div = newElement("div");
-    div.className = "category";
-    div.innerHTML = name;
-    div.onclick = () => { fetchItems(id); };
-    content.appendChild(div);
+    const [id, name] = [category.Id, category.Name];
+    const element = `<div class="category" onclick="fetchItems(${id})">${name}</div>`;
+    content.innerHTML += element;
 };
 const loadCategories = (categories) => {
-    var _a;
     const content = getById("content");
-    (_a = getById("button")) === null || _a === void 0 ? void 0 : _a.remove();
     clear(content);
     for (const category of categories) {
         insertCategory(category, content);
     }
 };
 const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {
-    const url = `${IP}/LoadCategories`;
-    const request = yield fetch(url);
+    const request = yield fetch(`${IP}/LoadCategories`);
     if (request.ok) {
         const categories = yield request.json();
         loadCategories(categories);
     }
 });
+// MAIN
 const IP = "http://127.0.0.1";
 fetchCategories();

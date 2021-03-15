@@ -6,7 +6,8 @@ import (
 )
 
 const maxAttempts = 10
-const connStr string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql"
+// const connStr string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql"
+const connStr string = "user=postgres dbname=minera_catalog sslmode=disable" // WINDOWS
 
 const logFile = "logs/errors.log"
 var ErrorLogger *log.Logger

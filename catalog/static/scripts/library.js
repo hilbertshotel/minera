@@ -5,9 +5,6 @@ const getById = (id) => {
 const newElement = (type) => {
     return document.createElement(type);
 };
-const newImgElement = () => {
-    return document.createElement("img");
-};
 const newPackage = (method, data) => {
     return {
         method: method,

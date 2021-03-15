@@ -8,26 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const VerifyUser = (userData, output) => __awaiter(void 0, void 0, void 0, function* () {
-    const url = `${IP}/VerifyUser`;
+// LOGIN
+const verifyUser = (userData, output) => __awaiter(void 0, void 0, void 0, function* () {
     const data = newPackage("POST", userData);
-    const request = yield fetch(url, data);
+    const request = yield fetch(`${IP}/VerifyUser`, data);
     if (request.ok) {
         const status = yield request.json();
         if (status !== "ok") {
             output.innerHTML = status;
-            getInputWithId("password").value = "";
+            getInputWithId("pass").value = "";
             return;
         }
-        const script = newScriptElement();
-        script.src = "scripts/editor.js";
-        document.body.appendChild(script);
+        // THIS IS A SECURITY RISK WHICH NEEDS TO BE FIXED
+        addScript("scripts/editor.js");
     }
 });
-const validateInput = (output) => {
+const validateInput = () => {
+    const output = getById("output");
     output.innerHTML = "";
-    const username = getInputWithId("username").value;
-    const password = getInputWithId("password").value;
+    const username = getInputWithId("user").value;
+    const password = getInputWithId("pass").value;
     if (!username) {
         output.innerHTML = "МОЛЯ ВЪВЕДЕТЕ ПОТРЕБИТЕЛ";
         return;
@@ -37,28 +37,20 @@ const validateInput = (output) => {
         return;
     }
     const data = { "Username": username, "Password": password };
-    VerifyUser(data, output);
+    verifyUser(data, output);
 };
 const openLogin = () => {
     const content = getById("content");
-    const usernameInput = newInputElement();
-    usernameInput.type = "username";
-    usernameInput.id = "username";
-    usernameInput.maxLength = 20;
-    usernameInput.placeholder = "Потребител";
-    const passwordInput = newInputElement();
-    passwordInput.type = "password";
-    passwordInput.id = "password";
-    passwordInput.maxLength = 20;
-    passwordInput.placeholder = "Парола";
-    const button = newElement("button");
-    button.innerHTML = "ВХОД";
-    const output = newElement("p");
-    output.id = "output";
-    button.onclick = () => { validateInput(output); };
-    content.appendChild(usernameInput);
-    content.appendChild(passwordInput);
-    content.appendChild(button);
-    content.appendChild(output);
-    usernameInput.focus();
+    const userInput = `<input id="user" maxlength="20" placeholder="Потребител">`;
+    const passInput = `<input type="password" id="pass" maxlength="20" placeholder="Парола">`;
+    const button = `<button onclick="validateInput()">ВХОД</button>`;
+    const output = `<p id="output"></p>`;
+    content.innerHTML += userInput;
+    content.innerHTML += passInput;
+    content.innerHTML += button;
+    content.innerHTML += output;
+    getById("user").focus();
 };
+// MAIN
+const IP = "http://127.0.0.1:5252";
+openLogin();

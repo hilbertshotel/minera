@@ -6,16 +6,10 @@ const getInputWithId = (id: string): HTMLInputElement => {
     return <HTMLInputElement>document.getElementById(id)!
 }
 
-const newElement = (type: string): HTMLElement => {
-    return document.createElement(type)
-}
-
-const newInputElement = (): HTMLInputElement => {
-    return document.createElement("input")
-}
-
-const newScriptElement = (): HTMLScriptElement => {
-    return document.createElement("script")
+const addScript = (source: string) => {
+    const script = document.createElement("script")
+    script.src = source
+    document.body.appendChild(script)
 }
 
 const newPackage = <T>(method: string, data: T): Object => {

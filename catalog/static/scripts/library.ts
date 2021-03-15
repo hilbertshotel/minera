@@ -6,10 +6,6 @@ const newElement = (type: string): HTMLElement => {
     return document.createElement(type)
 }
 
-const newImgElement = (): HTMLImageElement => {
-    return document.createElement("img")
-}
-
 const newPackage = <T>(method: string, data: T): Object => {
     return {
         method: method,
