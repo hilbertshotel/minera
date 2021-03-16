@@ -13,19 +13,22 @@ interface Category {
 
 // ITEMS
 const insertItem = (item: Item, content: HTMLElement) => {
-    const titleTag = `<h1>${item.Name}</h1>`
-    content.innerHTML += titleTag
+    const titleTag = newElement("h1")
+    titleTag.innerHTML = item.Name
+    content.appendChild(titleTag)
 
-    const textTag = `<pre>${item.Description}</pre>`
-    content.innerHTML += textTag
+    const textTag = newElement("pre")
+    textTag.innerHTML = item.Description
+    content.appendChild(textTag)
 
-    const imagesTag = newElement("div")
-    imagesTag.className = "images"
-    content.appendChild(imagesTag)
+    const imagesDiv = newElement("div")
+    imagesDiv.className = "images"
+    content.appendChild(imagesDiv)
 
     for (const image of item.Images) {
-        const imgTag = `<img src="${image}">`
-        imagesTag.innerHTML += imgTag
+        const imgTag = newImgElement()
+        imgTag.src = image
+        imagesDiv.appendChild(imgTag)
     }
 }
 
@@ -38,8 +41,11 @@ const loadItems = (items: Item[]) => {
         insertItem(item, content)
     }
 
-    const backButton = `<button id="button" onclick="fetchCategories()">ОБРАТНО</button>`
-    content.innerHTML += backButton
+    const backButton = newElement("button")
+    backButton.id = "button"
+    backButton.innerHTML = "ОБРАТНО"
+    backButton.onclick = fetchCategories
+    content.appendChild(backButton)
 }
 
 
@@ -56,9 +62,11 @@ const fetchItems = async (id: number) => {
 
 // CATEGORIES
 const insertCategory = (category: Category, content: HTMLElement) => {
-    const [id, name] = [category.Id, category.Name]
-    const element = `<div class="category" onclick="fetchItems(${id})">${name}</div>`
-    content.innerHTML += element
+    const element = newElement("div")
+    element.className = "category"
+    element.innerHTML = category.Name
+    element.onclick = () => { fetchItems(category.Id) }
+    content.appendChild(element)
 }
   
 

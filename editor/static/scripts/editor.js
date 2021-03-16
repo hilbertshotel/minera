@@ -9,33 +9,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 // ITEMS
-const loadItems = (items) => {
+const insertItem = (item, content) => {
+    const input = newInput();
+    input.value = item.Name;
+    input.placeholder = item.Name;
+    const button1 = newButton("РЕДАКЦИЯ");
+    const textarea = newTextArea();
+    textarea.value = item.Description;
+    textarea.placeholder = item.Description;
+    const button2 = newButton("РЕДАКЦИЯ");
+    const children = [input, button1, br(), textarea, button2, br()];
+    appendChildren(children, content);
+    for (const src of item.Images) {
+        const p = document.createElement("p");
+        p.innerHTML = src;
+        content.appendChild(p);
+    }
+    content.appendChild(hr());
+};
+const loadItems = (category, items) => {
     const content = getById("content");
     clear(content);
-    // add category section
-    // edit category name
-    // delete category with WARNING
-    // add items section
-    // list all items
-    // edit item title
-    // edit item description
-    // edit item images
-    // add new item
-    console.log(items);
+    const input = newInput();
+    input.value = category.Name;
+    input.placeholder = category.Name;
+    const button = newButton("РЕДАКЦИЯ");
+    appendChildren([input, button, hr()], content);
+    for (const item of items) {
+        insertItem(item, content);
+    }
+    input.focus();
 };
-const fetchItems = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const fetchItems = (category) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${IP}/LoadItems`;
-    const data = newPackage("POST", id);
+    const data = newPackage("POST", category.Id);
     const request = yield fetch(url, data);
     if (request.ok) {
         const items = yield request.json();
-        loadItems(items);
+        loadItems(category, items);
     }
 });
 // CATEGORIES
-const addNewCategory = () => __awaiter(void 0, void 0, void 0, function* () {
-    const output = getById("output");
-    const newCategory = getInputWithId("new").value;
+const addNewCategory = (output) => __awaiter(void 0, void 0, void 0, function* () {
+    const newCategory = getInputValue("new");
     if (!newCategory) {
         output.innerHTML = "ВЪВЕДЕТЕ ИМЕ";
         return;
@@ -48,20 +64,23 @@ const addNewCategory = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const insertCategory = (category, content) => {
-    const [id, name] = [category.Id, category.Name];
-    const element = `<button id="category" onclick="fetchItems(${id})">${name}</button><br>`;
-    content.innerHTML += element;
+    const button = newButton(category.Name);
+    button.id = "category";
+    button.onclick = () => { fetchItems(category); };
+    content.appendChild(button);
 };
 const loadCategories = (categories, content) => {
     for (const category of categories) {
         insertCategory(category, content);
     }
-    const newCategorySection = `
-    <input id="new" placeholder="Нова категория">
-    <button onclick="addNewCategory()">ДОБАВИ</button>
-    <p id="output"></p>`;
-    content.innerHTML += newCategorySection;
-    getById("new").focus();
+    const input = newInput();
+    input.id = "new";
+    input.placeholder = "Нова категория";
+    const button = newButton("ДОБАВИ");
+    const output = outputField();
+    button.onclick = () => { addNewCategory(output); };
+    appendChildren([br(), input, button, output], content);
+    input.focus();
 };
 const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {
     const content = getById("content");

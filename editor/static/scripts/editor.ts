@@ -1,35 +1,62 @@
 // ITEMS
-const loadItems = (items: Item[]) => {
-    const content = getById("content")
-    clear(content)
-    // add category section
-        // edit category name
-        // delete category with WARNING
-    // add items section
-        // list all items
-        // edit item title
-        // edit item description
-        // edit item images
-        // add new item
-    console.log(items)
+const insertItem = (item: Item, content: HTMLElement) => {
+    const input = newInput()
+    input.value = item.Name
+    input.placeholder = item.Name
+    const button1 = newButton("РЕДАКЦИЯ")
+
+    const textarea = newTextArea()
+    textarea.value = item.Description
+    textarea.placeholder = item.Description
+    const button2 = newButton("РЕДАКЦИЯ")
+
+    const children = [input, button1, br(), textarea, button2, br()]
+    appendChildren(children, content)
+
+    for (const src of item.Images) {
+        const p = document.createElement("p")
+        p.innerHTML = src
+        content.appendChild(p)
+    }
+
+    content.appendChild(hr())
 }
 
 
-const fetchItems = async (id: number) => {
+const loadItems = (category: Category, items: Item[]) => {
+    const content = getById("content")
+    clear(content)
+
+    const input = newInput()
+    input.value = category.Name
+    input.placeholder = category.Name
+
+    const button = newButton("РЕДАКЦИЯ")
+
+    appendChildren([input, button, hr()], content)
+
+    for (const item of items) {
+        insertItem(item, content)
+    }
+
+    input.focus()
+}
+
+
+const fetchItems = async (category: Category) => {
     const url = `${IP}/LoadItems`
-    const data = newPackage("POST", id)
+    const data = newPackage("POST", category.Id)
     const request = await fetch(url, data)
     if (request.ok) {
         const items = await request.json()
-        loadItems(items)
+        loadItems(category, items)
     }
 }
 
 
 // CATEGORIES
-const addNewCategory = async () => {
-    const output = getById("output")
-    const newCategory = getInputWithId("new").value
+const addNewCategory = async (output: HTMLElement) => {
+    const newCategory = getInputValue("new")
     if (!newCategory) { output.innerHTML = "ВЪВЕДЕТЕ ИМЕ"; return }
     
     const url = `${IP}/NewCategory`
@@ -40,9 +67,10 @@ const addNewCategory = async () => {
 
 
 const insertCategory = (category: Category, content: HTMLElement) => {
-    const [id, name] = [category.Id, category.Name]
-    const element = `<button id="category" onclick="fetchItems(${id})">${name}</button><br>`
-    content.innerHTML += element
+    const button = newButton(category.Name)
+    button.id = "category"
+    button.onclick = () => { fetchItems(category) }
+    content.appendChild(button)
 }
 
 
@@ -51,13 +79,15 @@ const loadCategories = (categories: Category[], content: HTMLElement) => {
         insertCategory(category, content)
     }
 
-    const newCategorySection = `
-    <input id="new" placeholder="Нова категория">
-    <button onclick="addNewCategory()">ДОБАВИ</button>
-    <p id="output"></p>`
-    content.innerHTML += newCategorySection
+    const input = newInput()
+    input.id = "new"
+    input.placeholder = "Нова категория"
+    const button = newButton("ДОБАВИ")
+    const output = outputField()
+    button.onclick = () => { addNewCategory(output) }
 
-    getById("new").focus()
+    appendChildren([br(), input, button, output], content)
+    input.focus()
 }
 
 
