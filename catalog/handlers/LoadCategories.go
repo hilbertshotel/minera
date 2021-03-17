@@ -14,7 +14,7 @@ func LoadCategories(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	// query database
-	rows, err := db.Query("SELECT id, name FROM categories;")
+	rows, err := db.Query("SELECT id, name FROM categories ORDER BY id ASC")
 	if err != nil { ErrorLogger.Println(err); return }
 	defer rows.Close()
 

@@ -9,6 +9,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type UserData struct {
+	Username string `json:username`
+	Password string `json:password`
+}
+
 func VerifyUser(w http.ResponseWriter, r *http.Request) {
 	// request data
 	var userData UserData
@@ -39,7 +44,7 @@ func VerifyUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil { ErrorLogger.Println(err); return }
 
 	// validate attempts
-	if attempts == maxAttempts {
+	if attempts == MAXATTEMPTS {
 		response = "ПРЕВИШИЛИ СТЕ ОПИТИТЕ ЗА ДОСТЪП"
 		writeResponse(w, response)
 		return 

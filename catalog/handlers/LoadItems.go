@@ -22,7 +22,7 @@ func LoadItems(w http.ResponseWriter, r *http.Request) {
 
 	// query database
 	rows, err := db.Query(`SELECT name, description, images
-	FROM items WHERE category_id = $1`, id)
+	FROM items WHERE category_id = $1 ORDER BY id ASC`, id)
 	if err != nil { ErrorLogger.Println(err); return }
 	defer rows.Close()
 

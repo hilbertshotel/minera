@@ -21,8 +21,8 @@ func LoadItems(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	// query database
-	rows, err := db.Query(`SELECT name, description, images
-	FROM items WHERE category_id = $1`, id)
+	rows, err := db.Query(`SELECT id, name, description, images
+	FROM items WHERE category_id = $1 ORDER BY id ASC`, id)
 	if err != nil { ErrorLogger.Println(err); return }
 	defer rows.Close()
 
@@ -30,7 +30,7 @@ func LoadItems(w http.ResponseWriter, r *http.Request) {
 	var response []Item
 	for rows.Next() {
 		item := Item{}
-		err = rows.Scan(&item.Name,	&item.Description, pq.Array(&item.Images))
+		err = rows.Scan(&item.Id, &item.Name, &item.Description, pq.Array(&item.Images))
 		if err != nil { ErrorLogger.Println(err); return }
 		response = append(response, item)
 	}

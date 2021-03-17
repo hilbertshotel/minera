@@ -16,6 +16,10 @@ func main() {
 	http.HandleFunc("/LoadItems", handlers.LoadItems)
 	http.HandleFunc("/VerifyUser", handlers.VerifyUser)
 	http.HandleFunc("/NewCategory", handlers.NewCategory)
+	http.HandleFunc("/EditCategoryName", handlers.EditCategoryName)
+	http.HandleFunc("/DeleteCategory", handlers.DeleteCategory)
+	http.HandleFunc("/NewItem", handlers.NewItem)
+	http.HandleFunc("/NewItemImages", handlers.NewItemImages)
 
 	fmt.Println("Now serving @", IP)
 	http.ListenAndServe(IP, nil)

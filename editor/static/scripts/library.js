@@ -6,6 +6,9 @@ const getById = (id) => {
 const newInput = () => {
     return document.createElement("input");
 };
+const newElement = (type) => {
+    return document.createElement(type);
+};
 const outputField = () => {
     const output = document.createElement("p");
     output.id = "output";

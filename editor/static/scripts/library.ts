@@ -1,5 +1,6 @@
 // INTERFACES
 interface Item {
+    Id: number,
     Name: string,
     Description: string,
     Images: string[]
@@ -18,6 +19,10 @@ const getById = (id: string): HTMLElement => {
 
 const newInput = (): HTMLInputElement => {
     return <HTMLInputElement>document.createElement("input")
+}
+
+const newElement = (type: string): HTMLElement => {
+    return document.createElement(type)
 }
 
 const outputField = (): HTMLParagraphElement => {

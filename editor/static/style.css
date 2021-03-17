@@ -31,8 +31,19 @@ body {
     margin: 0.3em;
 }
 
+.content > textarea {
+    resize: none;
+    height: 10em;
+    width: 40%;
+}
+
 #category {
     width: 50%;
+}
+
+#delete {
+    color: white;
+    background-color: red;
 }
 
 #output {

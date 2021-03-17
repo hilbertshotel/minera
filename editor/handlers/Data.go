@@ -5,9 +5,11 @@ import (
 	"log"
 )
 
-const maxAttempts = 10
-// const connStr string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql"
-const connStr string = "user=postgres dbname=minera_catalog sslmode=disable" // WINDOWS
+const IMAGEDIR = "./images/"
+
+const MAXATTEMPTS = 10 // max login attempts
+const connStr string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql"
+// const connStr string = "user=postgres dbname=minera_catalog sslmode=disable" // WINDOWS
 
 const logFile = "logs/errors.log"
 var ErrorLogger *log.Logger
@@ -24,12 +26,8 @@ type Category struct {
 }
 
 type Item struct {
+	Id int `json:id`
 	Name string `json:name`
 	Description string `json:description`
 	Images []string `json:images`
-}
-
-type UserData struct {
-	Username string `json:username`
-	Password string `json:password`
 }
