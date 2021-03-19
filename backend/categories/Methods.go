@@ -9,7 +9,7 @@ import (
 	"minera/backend/utils"
 )
 
-func Get(w http.ResponseWriter, r *http.Request) {
+func Get(w http.ResponseWriter) {
 	// connect to database
 	db, err := sql.Open("postgres", utils.ConnStr)
 	if err != nil { utils.Logger.Println(err); return }
@@ -88,6 +88,8 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	
 	// edit category
+	_, err = db.Exec(`DELETE FROM items WHERE category_id = $1`, id) 
+	if err != nil { utils.Logger.Println(err); return }
 	_, err = db.Exec(`DELETE FROM categories WHERE id = $1`, id) 
 	if err != nil { utils.Logger.Println(err); return }
 }

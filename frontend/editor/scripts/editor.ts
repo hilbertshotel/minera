@@ -1,4 +1,11 @@
 // ITEM METHODS
+const deleteItem = async (id: number, category: Category) => {
+    const data = newPackage("DELETE", "")
+    const request = await fetch(`${IP}/Editor/Items/${id}`, data)
+    if (request.ok) { getItems(category) }
+}
+
+
 const postItem = async (category: Category) => {
     const name = getInputValue("name")
     const description = getInputValue("description")
@@ -60,6 +67,13 @@ const getItems = async (category: Category) => {
 
 
 // ITEM PAGE CONSTRUCTION
+const deleteItemButton = async (id: number, button: HTMLElement, category: Category) => {
+    if (button.id === "deleteButton") { deleteItem(id, category) }
+    button.id = "deleteButton"
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    button.id = ""
+}
+
 const insertNewItemSection = (category: Category, content: HTMLElement) => {
     const header = newElement("h1")
     header.innerHTML = "Добавяне на нов артикул"
@@ -88,45 +102,14 @@ const insertNewItemSection = (category: Category, content: HTMLElement) => {
 }
 
 
-// const insertItem = (id: number, item: Item, content: HTMLElement) => {
-//     const input = newInput()
-//     input.value = item.Name
-//     input.maxLength = 50
-//     input.placeholder = item.Name
+const insertItem = (item: Item, content: HTMLElement, category: Category) => {
+    const nameTag = newButton(item.Name)
+    nameTag.className = "itemName"
 
-//     const button1 = newButton("РЕДАКЦИЯ ИМЕ")
-//     button1.onclick = () => {  } // edit item name
-//     const button2 = newButton("ИЗТРИЙ")
-//     button2.id = "delete"
-//     button2.onclick = () => {  } // delete item with a warning
+    const deleteButton = newButton("Изтрий")
+    deleteButton.onclick = () => { deleteItemButton(item.Id, deleteButton, category) } 
 
-//     const textarea = newTextArea()
-//     textarea.value = item.Description
-//     textarea.maxLength = 300
-//     textarea.placeholder = item.Description
-
-//     const button3 = newButton("РЕДАКЦИЯ ОПИСАНИЕ")
-//     button3.onclick = () => {  } // edit item description
-
-//     const children = [input, button1, button2, br(), textarea, button3, br()]
-//     appendChildren(children, content)
-
-//     for (let i=0; i<3;i++) {
-//         const input = newInput()
-//         input.type = "file"
-//         const button = newButton(`ДОБАВИ СНИМКА ${i+1}`)
-//         button.onclick = () => {  } // change item image (using index)
-//         appendChildren([input, button, br()], content)
-//     }
-
-//     // ADD EDIT ITEM OUTPUT FIELD
-
-//     content.appendChild(hr())
-// }
-
-const insertItem = (item: Item, content: HTMLElement) => {
-    const itemTag = newButton(item.Name)
-    content.appendChild(itemTag)
+    appendChildren([nameTag, deleteButton, br()], content)
 }
 
 
@@ -137,7 +120,7 @@ const loadItems = (category: Category, items: Item[]) => {
 
     if (items !== null) {
         for (const item of items) {
-            insertItem(item, content)
+            insertItem(item, content, category)
         }
     }
 
@@ -160,8 +143,8 @@ const deleteCategory = async (id: number) => {
 }
 
 
-const putCategory = async (category: Category) => {
-    const newName = getInputValue("categoryName")
+const putCategory = async (category: Category, nameTag: HTMLInputElement) => {
+    const newName = nameTag.value
     if (newName === category.Name || !newName) { return }
 
     const info = { id: category.Id, newName: newName }
@@ -174,7 +157,9 @@ const putCategory = async (category: Category) => {
 const postCategory = async () => {
     const newCategory = getInputValue("newCategory")
     if (!newCategory) {
-        getById("output").innerHTML = "ВЪВЕДЕТЕ ИМЕ"
+        const output = getById("output")
+        output.innerHTML = "ВЪВЕДЕТЕ ИМЕ"
+        output.focus()
         return
     }
     
@@ -196,9 +181,17 @@ const getCategories = async () => {
 
 
 // CATEGORY PAGE CONSTRUCTION
+const deleteCategoryButton = async (id: number, button: HTMLElement) => {
+    if (button.id === "deleteButton") { deleteCategory(id) }
+    button.id = "deleteButton"
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    button.id = ""
+}
+
+
 const insertCategory = (category: Category, content: HTMLElement) => {
     const nameTag = newInput()
-    nameTag.id = "categoryName"
+    nameTag.className = "categoryName"
     nameTag.value = category.Name
     nameTag.placeholder = category.Name
 
@@ -206,19 +199,20 @@ const insertCategory = (category: Category, content: HTMLElement) => {
     itemsButton.onclick = () => { getItems(category) }
     
     const editButton = newButton("Ново име")
-    editButton.onclick = () => { putCategory(category) } 
+    editButton.onclick = () => { putCategory(category, nameTag) } 
     
     const deleteButton = newButton("Изтрий")
-    deleteButton.id = "deleteButton"
-    deleteButton.onclick = () => { deleteCategory(category.Id) } 
+    deleteButton.onclick = () => { deleteCategoryButton(category.Id, deleteButton) } 
 
     appendChildren([nameTag, itemsButton, editButton, deleteButton, br()], content)
 }
 
 
 const loadCategories = (categories: Category[], content: HTMLElement) => {
-    for (const category of categories) {
-        insertCategory(category, content)
+    if (categories !== null) {
+        for (const category of categories) {
+            insertCategory(category, content)
+        }
     }
 
     const input = newInput()

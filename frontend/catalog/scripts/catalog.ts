@@ -70,8 +70,10 @@ const insertCategory = (category: Category, content: HTMLElement) => {
 const loadCategories = (categories: Category[]) => {
     const content = getById("content")
     clear(content)
-    for (const category of categories) {
-        insertCategory(category, content)
+    if (categories !== null) {
+        for (const category of categories) {
+            insertCategory(category, content)
+        }
     }
 }
   

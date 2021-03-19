@@ -55,8 +55,10 @@ const insertCategory = (category, content) => {
 const loadCategories = (categories) => {
     const content = getById("content");
     clear(content);
-    for (const category of categories) {
-        insertCategory(category, content);
+    if (categories !== null) {
+        for (const category of categories) {
+            insertCategory(category, content);
+        }
     }
 };
 const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {
