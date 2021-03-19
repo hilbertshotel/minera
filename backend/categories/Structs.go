@@ -7,3 +7,8 @@ type Category struct {
 	Id int `json:id`
 	Name string `json:name`
 }
+
+type PutCategory struct {
+	Id int `json:id`
+	NewName string `json:newName`
+}

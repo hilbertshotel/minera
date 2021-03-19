@@ -1,69 +1,91 @@
-// // ITEM METHODS
-// const addNewItem = async (category: Category) => {
-//     const name = getInputValue("name")
-//     const description = getInputValue("description")
-//     const images = <HTMLInputElement>getById("images")!
+// ITEM METHODS
+const postItem = async (category: Category) => {
+    const name = getInputValue("name")
+    const description = getInputValue("description")
+    const imagesTag = <HTMLInputElement>getById("images")!
+    const output = getById("output")
 
-//     if (!name) {} // ADD ERROR MSG
-//     if (!description) {} // ADD ERROR MSG
+    if (!name) { output.innerHTML = "ВЪВЕДЕТЕ ИМЕ"; return }
+    if (!description) {
+        output.innerHTML = "ВЪВЕДЕТЕ ОПИСАНИЕ"
+        output.focus()
+        return
+    }
 
-//     let filenameArray: string[] = []
-//     const imgData = new FormData()
-//     const files = images.files
+    let filenameArray: string[] = []
+    const images = new FormData()
+    const files = imagesTag.files
 
-//     if (!files) { return } // ADD ERROR MSG
-//     if (files.length === 0) { return } // ADD ERROR MSG
-//     if (files.length > 3) { return } // ADD ERROR MSG
+    if (!files) { return }
+    if (files.length === 0) { 
+        output.innerHTML = "ДОБАВЕТЕ ПОНЕ ЕДНА СНИМКА"
+        output.focus()
+        return
+    }
+    if (files.length > 3) {
+        output.innerHTML = "ИЗБРАЛИ СТЕ ПОВЕЧЕ ОТ ТРИ ИЗОБРАЖЕНИЯ"
+        output.focus()
+        return
+    }
 
-//     for (const file of files) {
-//         imgData.append("files", file)
-//         filenameArray.push(file.name)
-//     }
+    for (const file of files) {
+        images.append("files", file)
+        filenameArray.push(file.name)
+    }
 
-//     const itemData = {
-//         id: category.Id,
-//         name: name,
-//         description: description,
-//         images: filenameArray
-//     }
+    const newItem = {
+        id: category.Id,
+        name: name,
+        description: description,
+        images: filenameArray
+    }
 
-//     // send data to backend
-//     const data = { method: "POST", body: imgData }
-//     const request1 = await fetch(`${IP}/NewItemImages`, data)
-//     if (request1.ok) {
-//         const data = newPackage("POST", itemData)
-//         const request2 = await fetch(`${IP}/NewItem`, data)
-//         if (request2.ok) { fetchItems(category) }
-//     }
-// }
+    const data = { method: "POST", body: images }
+    const request1 = await fetch(`${IP}/FileTransfer`, data)
+    if (request1.ok) {
+        const data = newPackage("POST", newItem)
+        const request2 = await fetch(`${IP}/Editor/Items/0`, data)
+        if (request2.ok) { getItems(category) }
+    }
+}
 
 
-// // LOAD ITEMS ON PAGE
-// const insertNewItemSection = (category: Category, content: HTMLElement) => {
-//     const header = newElement("h1")
-//     header.innerHTML = "Добавяне на нов артикул"
+const getItems = async (category: Category) => {
+    const request = await fetch(`${IP}/Editor/Items/${category.Id}`)
+    if (request.ok) {
+        const items = await request.json()
+        loadItems(category, items)
+    }
+}
 
-//     const name = newInput()
-//     name.id = "name"
-//     name.maxLength = 50
-//     name.placeholder = "Име на артикула"
 
-//     const description = newTextArea()
-//     description.id = "description"
-//     description.maxLength = 300
-//     description.placeholder = "Описание на артикула"
+// ITEM PAGE CONSTRUCTION
+const insertNewItemSection = (category: Category, content: HTMLElement) => {
+    const header = newElement("h1")
+    header.innerHTML = "Добавяне на нов артикул"
 
-//     const images = newInput()
-//     images.type = "file"
-//     images.id = "images"
-//     images.setAttribute("multiple", "")
-//     images.accept = "image/*"
+    const name = newInput()
+    name.id = "name"
+    name.maxLength = 50
+    name.placeholder = "Име на артикула"
+
+    const description = newTextArea()
+    description.id = "description"
+    description.maxLength = 300
+    description.placeholder = "Описание на артикула"
+
+    const images = newInput()
+    images.type = "file"
+    images.id = "images"
+    images.setAttribute("multiple", "")
+    images.accept = "image/*"
     
-//     const addButton = newButton("ДОБАВИ")
-//     addButton.onclick = () => { addNewItem(category) }
+    const addButton = newButton("ДОБАВИ")
+    addButton.onclick = () => { postItem(category) }
 
-//     appendChildren([header, name, br(), description, br(), images, br(), addButton], content)
-// }
+    appendChildren([header, name, br(), description, br(), images, br(), addButton], content)
+    name.focus()
+}
 
 
 // const insertItem = (id: number, item: Item, content: HTMLElement) => {
@@ -102,46 +124,31 @@
 //     content.appendChild(hr())
 // }
 
-
-// const loadItems = (category: Category, items: Item[]) => {
-//     const content = getById("content")
-//     clear(content)
-
-//     const input = newInput()
-//     input.id = "editCategoryName"
-//     input.maxLength = 50
-//     input.value = category.Name
-//     input.placeholder = category.Name
-
-//     const button1 = newButton("РЕДАКЦИЯ ИМЕ")
-//     button1.onclick = () => { editCategoryName(category) }
-//     const button2 = newButton("ИЗТРИЙ")
-//     button2.id = "delete"
-//     button2.onclick = () => { deleteCategory(category.Id) }
-
-//     // EDIT CATEGORY OUTPUT FIELD
-
-//     appendChildren([input, button1, button2, hr()], content)
-
-//     if (items !== null) {
-//         for (const item of items) {
-//             insertItem(category.Id, item, content)
-//         }
-//     }
-
-//     input.focus()
-//     insertNewItemSection(category, content)
-//     // NEW ITEM OUTPUT FIELD
-//     // ADD BACK BUTTON
-// }
+const insertItem = (item: Item, content: HTMLElement) => {
+    const itemTag = newButton(item.Name)
+    content.appendChild(itemTag)
+}
 
 
-const fetchItems = async (category: Category) => {
-    // const request = await fetch(`${IP}/Editor/Items/${category.Id}`)
-    // if (request.ok) {
-    //     const items = await request.json()
-    //     loadItems(category, items)
-    // }
+const loadItems = (category: Category, items: Item[]) => {
+    const content = getById("content")
+    clear(content)
+    getById("h").innerHTML = category.Name
+
+    if (items !== null) {
+        for (const item of items) {
+            insertItem(item, content)
+        }
+    }
+
+    insertNewItemSection(category, content)
+
+    const output = outputField()
+    const backButton = newButton("ВЪРНИ СЕ")
+    backButton.id = "backButton"
+    backButton.onclick = getCategories
+
+    appendChildren([output, backButton], content)
 }
 
 
@@ -155,11 +162,7 @@ const deleteCategory = async (id: number) => {
 
 const putCategory = async (category: Category) => {
     const newName = getInputValue("categoryName")
-    if (newName === category.Name) { return }
-    if (!newName) {
-        getById("output").innerHTML = category.Name
-        return
-    }
+    if (newName === category.Name || !newName) { return }
 
     const info = { id: category.Id, newName: newName }
     const data = newPackage("PUT", info)
@@ -180,6 +183,17 @@ const postCategory = async () => {
     if (request.ok) { getCategories() }
 }
 
+const getCategories = async () => {
+    getById("h").innerHTML = "РЕДАКТОР"
+    const content = getById("content")
+    clear(content)
+    const request = await fetch(`${IP}/Editor/Categories`)
+    if (request.ok) {
+        const categories = await request.json()
+        loadCategories(categories, content)
+    }
+}
+
 
 // CATEGORY PAGE CONSTRUCTION
 const insertCategory = (category: Category, content: HTMLElement) => {
@@ -189,14 +203,14 @@ const insertCategory = (category: Category, content: HTMLElement) => {
     nameTag.placeholder = category.Name
 
     const itemsButton = newButton("Преглед")
-    itemsButton.onclick = () => { fetchItems(category) }
+    itemsButton.onclick = () => { getItems(category) }
     
     const editButton = newButton("Ново име")
     editButton.onclick = () => { putCategory(category) } 
     
     const deleteButton = newButton("Изтрий")
     deleteButton.id = "deleteButton"
-    editButton.onclick = () => { deleteCategory(category.Id) } 
+    deleteButton.onclick = () => { deleteCategory(category.Id) } 
 
     appendChildren([nameTag, itemsButton, editButton, deleteButton, br()], content)
 }
@@ -218,17 +232,6 @@ const loadCategories = (categories: Category[], content: HTMLElement) => {
 
     appendChildren([br(), input, button, output], content)
     input.focus()
-}
-
-
-const getCategories = async () => {
-    const content = getById("content")
-    clear(content)
-    const request = await fetch(`${IP}/Editor/Categories`)
-    if (request.ok) {
-        const categories = await request.json()
-        loadCategories(categories, content)
-    }
 }
 
 

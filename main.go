@@ -22,6 +22,7 @@ func main() {
 	http.HandleFunc("/Catalog/", backend.Catalog)
 	http.HandleFunc("/Editor/", backend.Editor)
 	http.HandleFunc("/Authentication", backend.Authentication)
+	http.HandleFunc("/FileTransfer", backend.FileTransfer)
 
 	fmt.Println("Now serving @", ADDRESS)
 	http.ListenAndServe(ADDRESS, nil)

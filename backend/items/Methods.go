@@ -2,12 +2,12 @@ package items
 
 import (
 	"net/http"
+	"io/ioutil"
 	"database/sql"
 	"encoding/json"
 	"github.com/lib/pq"
 	"minera/backend/utils"
 )
-
 
 func Get(w http.ResponseWriter, r *http.Request, id int) {
 	// connect to database
@@ -39,6 +39,27 @@ func Get(w http.ResponseWriter, r *http.Request, id int) {
 
 
 func Post(w http.ResponseWriter, r *http.Request) {
+	// get request data
+	var newItem Item
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil { utils.Logger.Println(err); return }
+	json.Unmarshal(request, &newItem)
+
+	// connect to database
+	db, err := sql.Open("postgres", utils.ConnStr)
+	if err != nil { utils.Logger.Println(err); return }
+	defer db.Close()
+	
+	// add path to images
+	var images []string
+	for _, img := range newItem.Images {
+		images = append(images, "images/" + img)
+	}
+
+	// query database
+	_, err = db.Exec(`INSERT INTO items (category_id, name, description, images)
+	VALUES ($1, $2, $3, $4)`, newItem.Id, newItem.Name, newItem.Description, pq.Array(images))
+	if err != nil { utils.Logger.Println(err); return }
 }
 
 

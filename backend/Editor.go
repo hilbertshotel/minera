@@ -10,7 +10,6 @@ import (
 )
 
 func Editor(writer http.ResponseWriter, request *http.Request) {
-	
 	// VALIDATOR
 	cookie, err := request.Cookie(utils.CookieName)
 	if err != nil {	utils.Logger.Println(err); return }

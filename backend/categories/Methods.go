@@ -1,14 +1,13 @@
 package categories
 
 import (
-	// "fmt"
 	"net/http"
+	"io/ioutil"
 	"database/sql"
 	"encoding/json"
 	_ "github.com/lib/pq"
 	"minera/backend/utils"
 )
-
 
 func Get(w http.ResponseWriter, r *http.Request) {
 	// connect to database
@@ -57,14 +56,9 @@ func Post(w http.ResponseWriter, r *http.Request) {
 }
 
 
-type EditCategoryData struct {
-	Id int `json:id`
-	NewName string `json:newName`
-}
-
-func EditCategoryName(w http.ResponseWriter, r *http.Request) {
+func Put(w http.ResponseWriter, r *http.Request) {
 	// get request data
-	var data EditCategoryData
+	var data PutCategory
 	request, err := ioutil.ReadAll(r.Body)
 	if err != nil { utils.Logger.Println(err); return }
 	json.Unmarshal(request, &data)
@@ -82,5 +76,18 @@ func EditCategoryName(w http.ResponseWriter, r *http.Request) {
 
 
 func Delete(w http.ResponseWriter, r *http.Request) {
+	// get request data
+	var id int
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil { utils.Logger.Println(err); return }
+	json.Unmarshal(request, &id)
+
+	// connect to database
+	db, err := sql.Open("postgres", utils.ConnStr)
+	if err != nil { utils.Logger.Println(err); return }
+	defer db.Close()
 	
+	// edit category
+	_, err = db.Exec(`DELETE FROM categories WHERE id = $1`, id) 
+	if err != nil { utils.Logger.Println(err); return }
 }
