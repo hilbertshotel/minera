@@ -22,7 +22,7 @@ func Editor(writer http.ResponseWriter, request *http.Request) {
 	// URL PARSER
 	u := request.URL.String()
 	uArray := strings.Split(u, "/")
-	section := uArray[2]
+	section := uArray[3]
 
 	// LOCAL DISPATCHER
 	switch section {
@@ -30,7 +30,7 @@ func Editor(writer http.ResponseWriter, request *http.Request) {
 			categories.Dispatcher(writer, request)
 		
 		case "Items":
-			id, err := strconv.Atoi(uArray[3])
+			id, err := strconv.Atoi(uArray[4])
 			if err != nil { utils.Logger.Println(err); return }
 			items.Dispatcher(writer, request, id)
 

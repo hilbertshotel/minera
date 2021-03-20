@@ -1,7 +1,6 @@
 package backend
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"net/http"
@@ -22,7 +21,7 @@ func FileTransfer(writer http.ResponseWriter, request *http.Request) {
 	request.ParseMultipartForm(32 << 20) 
 	files := request.MultipartForm.File["files"]
 	
-	folderList, err := listFolder(utils.ImageDir)
+	folderList, err := utils.ListFolder(utils.ImageDir)
 	if err != nil {	utils.Logger.Println(err); return }
 
 	for i, _ := range files {
@@ -33,9 +32,7 @@ func FileTransfer(writer http.ResponseWriter, request *http.Request) {
 		// VERIFY IF IMAGE IS ACTUALLY AN IMAGE
 
 		filename := files[i].Filename
-		if contains(folderList, filename) { continue }
-
-		fmt.Println(utils.ImageDir + files[i].Filename)
+		if utils.Contains(folderList, filename) { continue }
 
 		out, err := os.Create(utils.ImageDir + files[i].Filename)
 		if err != nil { utils.Logger.Println(err); return }
@@ -44,21 +41,4 @@ func FileTransfer(writer http.ResponseWriter, request *http.Request) {
 		_, err = io.Copy(out, file)
 		if err != nil { utils.Logger.Println(err); return }
 	}
-}
-
-
-func listFolder(folder string) ([]string, error) {
-	file, err := os.Open(folder)
-	if err != nil { return []string{}, err }
-	defer file.Close()
-	list, err := file.Readdirnames(0)
-	if err != nil { return []string{}, err }
-	return list, nil
-}
-
-func contains(list []string, filename string) bool {
-	for _, file := range list {
-		if file == filename { return true }
-	}
-	return false
 }

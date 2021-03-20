@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 // LOGIN
-const verifyUser = (url, userData, output) => __awaiter(void 0, void 0, void 0, function* () {
+const verifyUser = (userData, output) => __awaiter(void 0, void 0, void 0, function* () {
     const data = newPackage("POST", userData);
-    const request = yield fetch(url, data);
+    const request = yield fetch(`${IP}/Authentication`, data);
     if (request.ok) {
         const status = yield request.json();
         if (status !== "ok") {
@@ -34,7 +34,7 @@ const validateInput = (output) => {
         return;
     }
     const data = { "Username": username, "Password": password };
-    verifyUser(`${IP}/Authentication`, data, output);
+    verifyUser(data, output);
 };
 const openLogin = () => {
     const content = getById("content");
@@ -54,5 +54,6 @@ const openLogin = () => {
     username.focus();
 };
 // MAIN
-const IP = "http://127.0.0.1:5252";
+const IP = "http://127.0.0.1:5252/editor"; // development
+// const IP = "https://catalog.minera.bg/editor" // production
 openLogin();

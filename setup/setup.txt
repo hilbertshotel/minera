@@ -1,0 +1,8 @@
+step 1:
+    frontend/catalog/scripts/catalog.ts -> change IP constant
+
+step 2:
+    frontend/editor/scripts/login.ts -> change IP constant
+
+step 3:
+    backend/utils/GeneralData.go -> choose appropriate ConnStr constant for Postgresql

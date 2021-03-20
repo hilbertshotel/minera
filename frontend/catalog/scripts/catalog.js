@@ -69,5 +69,6 @@ const fetchCategories = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 // MAIN
-const IP = "http://127.0.0.1:5252";
+const IP = "http://127.0.0.1:5252"; // development
+// const IP = "https://catalog.minera.bg" // production
 fetchCategories();

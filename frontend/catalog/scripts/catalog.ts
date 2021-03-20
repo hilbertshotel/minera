@@ -88,5 +88,6 @@ const fetchCategories = async () => {
   
 
 // MAIN
-const IP = "http://127.0.0.1:5252"
+const IP = "http://127.0.0.1:5252" // development
+// const IP = "https://catalog.minera.bg" // production
 fetchCategories()

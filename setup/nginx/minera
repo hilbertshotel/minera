@@ -1,37 +1,7 @@
 server {
-    listen 80;
     server_name catalog.minera.bg;
 
     location / {
-        proxy_pass http://127.0.0.1:5151;
-    }
-
-    location /LoadCategories {
-        proxy_pass http://127.0.0.1:5151;
-    }
-    
-    location /LoadItems {
-        proxy_pass http://127.0.0.1:5151;
-    }
-}
-
-server {
-    listen 80;
-    server_name editor.minera.bg;
-
-    location / {
-        proxy_pass http://127.0.0.1:5252;
-    }
-
-    location /LoadCategories {
-        proxy_pass http://127.0.0.1:5252;
-    }
-    
-    location /LoadItems {
-        proxy_pass http://127.0.0.1:5252;
-    }
-
-    location /VerifyPassword {
         proxy_pass http://127.0.0.1:5252;
     }
 }

@@ -1,6 +1,7 @@
 package items
 
 import (
+	"os"
 	"net/http"
 	"io/ioutil"
 	"database/sql"
@@ -68,10 +69,28 @@ func Put(w http.ResponseWriter, r *http.Request) {
 
 
 func Delete(w http.ResponseWriter, id int) {
+	// connect to database
 	db, err := sql.Open("postgres", utils.ConnStr)
 	if err != nil { utils.Logger.Println(err); return }
 	defer db.Close()
 	
+	// delete images from image folder
+	var images []string
+	err = db.QueryRow(`SELECT images FROM items WHERE id = $1`, id).Scan(pq.Array(&images))
+	if err != nil { utils.Logger.Println(err); return }
+
+	folderList, err := utils.ListFolder(utils.ImageDir)
+	if err != nil {	utils.Logger.Println(err); return }
+
+	for _, image := range images {
+		filename := image[7:]
+		if utils.Contains(folderList, filename) {
+			err := os.Remove(utils.ImageDir + filename)
+			if err != nil {	utils.Logger.Println(err); return }
+		}
+	}
+
+	// delete items from database
 	_, err = db.Exec(`DELETE FROM items WHERE id = $1`, id) 
 	if err != nil { utils.Logger.Println(err); return }
 }

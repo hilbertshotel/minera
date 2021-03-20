@@ -1,7 +1,7 @@
 // LOGIN
-const verifyUser = async (url: string, userData: Object, output: HTMLElement) => {
+const verifyUser = async (userData: Object, output: HTMLElement) => {
     const data = newPackage("POST", userData)
-    const request = await fetch(url, data)
+    const request = await fetch(`${IP}/Authentication`, data)
     
     if (request.ok) {
         const status = await request.json()
@@ -23,7 +23,7 @@ const validateInput = (output: HTMLElement) => {
     if (!password) { output.innerHTML = "МОЛЯ ВЪВЕДЕТЕ ПАРОЛА"; return }
 
     const data = { "Username": username, "Password": password }
-    verifyUser(`${IP}/Authentication`, data, output)
+    verifyUser(data, output)
 }
 
 
@@ -51,5 +51,6 @@ const openLogin = () => {
 
 
 // MAIN
-const IP = "http://127.0.0.1:5252"
+const IP = "http://127.0.0.1:5252/editor" // development
+// const IP = "https://catalog.minera.bg/editor" // production
 openLogin()
