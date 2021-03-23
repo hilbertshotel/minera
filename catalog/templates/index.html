@@ -1,0 +1,11 @@
+{{ template "header.html" . }}
+
+<div class="content" id="content">
+
+    {{range .}}
+    <a class="category" href="{{.Path}}"> {{.Name}} </a>
+    {{end}}
+
+</div>
+    
+{{ template "footer.html" . }}

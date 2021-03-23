@@ -1,0 +1,15 @@
+{{ template "header.html" . }}
+
+<div class="content" id="content">
+
+    {{range .}}
+    <h1>{{.Name}}</h1>
+    <pre>{{.Description}}</pre>
+        {{range .Images}}
+        <img src="{{.}}">
+        {{end}}
+    {{end}}
+
+</div>
+    
+{{ template "footer.html" . }}
