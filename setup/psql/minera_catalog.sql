@@ -19,6 +19,12 @@ CREATE TABLE login (
     attempts INT NOT NULL
 );
 
+CREATE TABLE links (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    link VARCHAR(50) NOT NULL,
+    ref VARCHAR(20) NOT NULL
+);
+
 INSERT INTO categories (name) VALUES ('Category 1');
 
 INSERT INTO items (category_id, name, description, images)
