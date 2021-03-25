@@ -1,0 +1,18 @@
+UML
+
+simple image formatting
+
+sub-categories
+
+cookie jar emptying
+
+admin user
+
+cookie name = username
+
+REFACTOR POSTGRES
+
+telemetry:
+new errors in log file
+life status of all services
+including nginx & postgres

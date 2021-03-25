@@ -50,6 +50,8 @@ body {
 
 /***** categories *****/
 .category {
+    text-decoration: none;
+    display: block;
     padding: 0.4em;
     margin: 0.4em;
     background: linear-gradient(
@@ -70,7 +72,6 @@ body {
 }
 
 .category:hover {
-    cursor: pointer;
     animation-name: category_hover;
     animation-duration: 0.2s;
     animation-timing-function: ease-in;
