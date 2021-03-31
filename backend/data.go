@@ -10,20 +10,32 @@ import (
 // const connection_string string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql" // unix
 const connection_string = "user=postgres dbname=minera_catalog sslmode=disable" // windows
 
-const Address = "127.0.0.1:8000"
-var templates = template.Must(template.ParseGlob("templates/*"))
+// TEMPLATES
+var editor_templates = template.Must(template.ParseGlob("templates/editor/*"))
+var catalog_templates = template.Must(template.ParseGlob("templates/catalog/*"))
 
-// LOGGER
+// IP ADDRESS
+const Address = "127.0.0.1:8000"
+
+// MAX LOGIN ATTEMPTS
+const max_attempts = 10
+
+// LOGGERS
 const log_file = "logs/errors.log"
-var Logger *log.Logger
+var ErrorLogger *log.Logger
 
 func init() {
 	file, err := os.OpenFile(log_file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil { log.Println(err); return }
-	Logger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 // STRUCTS
+type UserData struct {
+	Username string `json:username`
+	Password string `json:password`
+}
+
 type Category struct {
 	Name string
 	Path string
