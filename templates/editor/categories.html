@@ -1,0 +1,24 @@
+{{ template "header.html" . }}
+
+    <h1>РЕДАКТОР</h1>
+
+    {{range .}}
+
+    <input id="{{.Id}}" value="{{.Name}}" placeholder="{{.Name}}">
+    <button onclick="getSubCategories({{.Id}})">ПОД-КАТЕГОРИИ</button>
+    <button onclick="renameCategory({{.Id}}, {{.Name}})">ПРОМЕНИ ИМЕ</button>
+    <button onclick="deleteCategory({{.Id}}, this)">ИЗТРИЙ</button>
+    <br>
+
+    {{end}}
+
+    <input id="newCategoryInput" placeholder="Нова категория">
+    <button onclick="addCategory()">ДОБАВИ</button>
+    <br>
+
+    <p id="output"></p>
+
+    <script src="/static/editor/editor.js"></script>
+    <script src="/static/editor/data.js"></script>
+</body>
+</html>

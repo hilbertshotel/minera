@@ -18,3 +18,5 @@ life status of all services
 including nginx & postgres
 
 access.log
+
+sessions expiration date in DATABASE

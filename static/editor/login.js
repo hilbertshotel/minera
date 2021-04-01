@@ -2,7 +2,7 @@ const output = document.getElementById("output")
 document.getElementById("username").focus()
 
 
-const validate_credentials = async () => {
+const validateCredentials = async () => {
 
     const username = document.getElementById("username").value
     if (!username) {
@@ -16,16 +16,9 @@ const validate_credentials = async () => {
         return
     }
 
-    const url = `${IP}/authentication`
-    const user_data = { username: username, password: password }
-    const data = {
-        method: "POST",
-        header: { "content-type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(user_data)
-    }
-
-    const request = await fetch(url, data)
+    const userData = { username: username, password: password }
+    const data = newPackage("POST", userData)
+    const request = await fetch(`${IP}/authentication`, data)
     if (request.ok) {
         const status = await request.json()
         if (status !== "ok") {
@@ -34,5 +27,5 @@ const validate_credentials = async () => {
         }
     }
 
-    window.location.replace(`${IP}/editor`)
+    document.location.replace(`${IP}/editor/`)
 }
