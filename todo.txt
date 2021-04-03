@@ -20,3 +20,4 @@ including nginx & postgres
 access.log
 
 sessions expiration date in DATABASE
+OR A SCRIPT THAT CLEARS THE SESSIONS DATABASE ON A CERTAIN CONDITION
