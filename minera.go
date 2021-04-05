@@ -14,6 +14,7 @@ func main() {
 	http.HandleFunc("/", routes.Catalog)
 	http.HandleFunc("/editor/", routes.Editor)
 	http.HandleFunc("/authentication", routes.Authentication)
+	http.HandleFunc("/files", routes.FileTransfer)
 
 	http.Handle("favicon.ico", http.NotFoundHandler())
 

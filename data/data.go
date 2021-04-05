@@ -3,8 +3,8 @@ package data
 import "html/template"
 
 // POSTGRESQL CONNECTION STRING
-// const connection_string string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql" // unix
-const ConnectionString = "user=postgres dbname=minera_catalog sslmode=disable" // windows
+const ConnectionString string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql" // unix
+// const ConnectionString = "user=postgres dbname=minera_catalog sslmode=disable" // windows
 
 // TEMPLATES
 var EditorTemplates = template.Must(template.ParseGlob("templates/editor/*"))
@@ -15,6 +15,9 @@ const Address = "127.0.0.1:8000"
 
 // MAX LOGIN ATTEMPTS
 const MaxAttempts = 10
+
+// IMAGE DIRECTORY
+const ImageDir = "images/"
 
 // FUNCTION LIST
 // GLOBAL:

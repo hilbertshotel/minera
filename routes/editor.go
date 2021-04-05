@@ -1,14 +1,13 @@
 package routes
 
 import (
-	"fmt"
+	"strconv"
 	"strings"
 	"net/http"
 	"database/sql"
-	_ "github.com/lib/pq"
 	"minera/data"
 	"minera/logs"
-	"minera/categories"
+	"minera/methods"
 )
 
 func Editor(writer http.ResponseWriter, request *http.Request) {
@@ -46,16 +45,45 @@ func Editor(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// local dispatcher
+	// handle index
 	url := request.URL.Path[1:]
 	if url == "editor/" {
-		categories.Dispatcher(writer, request)
+		methods.CategoriesDispatcher(writer, request)
 		return
 	}
 
+	// handle sub categories
 	urlArray := strings.Split(url, "/")
-	fmt.Println(urlArray)
+	if len(urlArray) == 2 {
+		id, err := strconv.Atoi(urlArray[1])
+		if err != nil {
+			logs.Errors.Println(err)
+			http.Error(writer, "Възникна грешка", 502)
+			return
+		}
+		methods.SubCategoriesDispatcher(writer, request, id)
+		return
+	}
 
-	response := []byte("editor")
-	writer.Write(response)
+	// handle products
+	if len(urlArray) == 3 {
+		categoryId, err := strconv.Atoi(urlArray[1])
+		if err != nil {
+			logs.Errors.Println(err)
+			http.Error(writer, "Възникна грешка", 502)
+			return
+		}
+
+		subCategoryId, err := strconv.Atoi(urlArray[2])
+		if err != nil {
+			logs.Errors.Println(err)
+			http.Error(writer, "Възникна грешка", 502)
+			return
+		}
+	
+		methods.ProductsDispatcher(writer, request, categoryId, subCategoryId)
+		return
+	}
+
+	http.Error(writer, "Възникна грешка", 502)
 }

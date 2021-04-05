@@ -21,12 +21,21 @@ CREATE TABLE categories (
 
 CREATE TABLE sub_categories (
     id BIGSERIAL PRIMARY KEY,
-    category_id BIGINT NOT NULL REFERENCES categories (id),
+    category_id BIGINT NOT NULL REFERENCES categories (id) ON DELETE CASCADE,
     name VARCHAR(50) NOT NULL,
     added TIMESTAMPTZ NOT NULL
 );
 
+CREATE TABLE products (
+    id BIGSERIAL PRIMARY KEY,
+    sub_category_id BIGINT NOT NULL REFERENCES sub_categories (id) ON DELETE CASCADE,
+    name VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+    images TEXT [],
+    added TIMESTAMPTZ NOT NULL
+);
 
--- \i C:/Users/kolu/src/minera/catalog/minera_catalog.sql
+-- \i C:/Users/kolu/src/minera/catalog/minera_catalog.sql -- win
+-- \i /home/kolu/src/minera/setup/psql/minera_catalog.sql -- unix
 
 -- ON DELETE CASCADE

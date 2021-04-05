@@ -1,1 +1,1 @@
-ERROR: 2021/04/01 08:03:01 editor.go:34: sql: unknown driver "postsgres" (forgotten import?)
+ERROR: 2021/04/05 13:46:08 methods.go:111: pq: null value in column "added" violates not-null constraint

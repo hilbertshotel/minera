@@ -8,3 +8,7 @@ const newPackage = (method, data) => {
         body: JSON.stringify(data)
     }
 }
+
+const goto = (url) => {
+    window.location.href = url
+}

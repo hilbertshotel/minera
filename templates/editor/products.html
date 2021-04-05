@@ -1,0 +1,30 @@
+{{ template "header.html" . }}
+
+    <h1>{{.SubCatName}}</h1>
+    <hr>
+
+    {{$categoryId := .CatId}}
+    {{$subCategoryId := .SubCatId}}
+
+    {{range .Products}}
+
+    <input id="{{.Id}}" value="{{.Name}}" placeholder="{{.Name}}" maxlength="50"><br>
+    <textarea placeholder="{{.Description}}" maxlength="300">"{{.Description}}"</textarea><br>
+    <input type="file" multiple accept="image/*"><br>
+    <button onclick="editProduct()">ЗАПАЗИ ПРОМЕНИТЕ</button>
+    <button onclick="deleteProduct()">ИЗТРИЙ</button><br>
+    <hr>
+
+    {{end}}
+
+    <input id="name" placeholder="Име на продукта" maxlength="50"><br>
+    <textarea id="description" placeholder="Описание на продукта" maxlength="300"></textarea><br>
+    <input id="images" type="file" multiple accept="image/*"><br>
+    <button onclick="addProduct({{$categoryId}}, {{$subCategoryId}})">ДОБАВИ</button><br>
+
+    <p id="output"></p>
+
+    <script src="/static/editor/products.js"></script>
+    <script src="/static/editor/data.js"></script>
+</body>
+</html>

@@ -3,8 +3,8 @@ document.getElementById("newCategoryInput").focus()
 
 
 // GET
-const getSubCategories = (id) => {
-    console.log(id)
+const getSubCategories = async (id) => {
+    goto(`${IP}/editor/${id}`)
 }
 
 
@@ -18,7 +18,7 @@ const addCategory = async () => {
 
     const data = newPackage("POST", newCategory)
     const request = await fetch(`${IP}/editor/`, data)
-    if (request.ok) { location.reload() }
+    if (request.ok) { goto(`${IP}/editor`) }
 }
 
 
@@ -30,7 +30,7 @@ const renameCategory = async (id, oldName) => {
 
     const data = newPackage("PUT", { id: id, name: newName })
     const request = await fetch(`${IP}/editor`, data)
-    if (request.ok) { location.reload() }
+    if (request.ok) { goto(`${IP}/editor`) }
 }
 
 
@@ -39,7 +39,7 @@ const deleteCategory = async (id, button) => {
     if (button.id === "deleteButton") {
         const data = newPackage("DELETE", id)
         const request = await fetch(`${IP}/editor`, data)
-        if (request.ok) { location.reload() }
+        if (request.ok) { goto(`${IP}/editor`) }
     }
 
     button.id = "deleteButton"
