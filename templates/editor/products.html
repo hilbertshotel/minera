@@ -9,10 +9,10 @@
     {{range .Products}}
 
     <input id="{{.Id}}" value="{{.Name}}" placeholder="{{.Name}}" maxlength="50"><br>
-    <textarea placeholder="{{.Description}}" maxlength="300">"{{.Description}}"</textarea><br>
+    <textarea spellcheck="false" placeholder="{{.Description}}" maxlength="300">{{.Description}}</textarea><br>
     <input type="file" multiple accept="image/*"><br>
     <button onclick="editProduct()">ЗАПАЗИ ПРОМЕНИТЕ</button>
-    <button onclick="deleteProduct()">ИЗТРИЙ</button><br>
+    <button onclick="deleteProduct({{$categoryId}}, {{$subCategoryId}}, {{.Id}}, this)">ИЗТРИЙ</button><br>
     <hr>
 
     {{end}}
@@ -23,6 +23,8 @@
     <button onclick="addProduct({{$categoryId}}, {{$subCategoryId}})">ДОБАВИ</button><br>
 
     <p id="output"></p>
+    <br>
+    <br>
 
     <script src="/static/editor/products.js"></script>
     <script src="/static/editor/data.js"></script>

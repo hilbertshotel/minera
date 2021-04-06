@@ -19,23 +19,5 @@ const MaxAttempts = 10
 // IMAGE DIRECTORY
 const ImageDir = "images/"
 
-// FUNCTION LIST
-// GLOBAL:
-// get_categories OK
-// add_category
-
-// CATEGORIES:
-// get_sub_categories NOW
-// edit_category
-// delete_category
-// add_sub_category
-
-// SUB_CATEGORIES
-// get_products
-// edit_sub_category
-// delete_sub_category
-// add_product
-
-// PRODUCTS
-// delete_product
-// edit_product
+// LOGGING FILES
+const logFile = "logs/errors.log"

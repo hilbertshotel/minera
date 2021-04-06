@@ -2,6 +2,7 @@ const output = document.getElementById("output")
 document.getElementById("name").focus()
 
 
+// POST
 const addProduct = async (categoryId, subCategoryId) => {
     const name = document.getElementById("name").value
     if (!name) {
@@ -50,10 +51,19 @@ const addProduct = async (categoryId, subCategoryId) => {
 }
 
 
-const editProduct = () => {
-    
-}
+// PUT
+const editProduct = () => {}
 
-const deleteProduct = () => {
-    
+
+// DELETE
+const deleteProduct = async (categoryId, subCategoryId, id, button) => {
+    if (button.id === "deleteButton") {
+        const data = newPackage("DELETE", id)
+        const response = await fetch(`${IP}/editor/${categoryId}/${subCategoryId}`, data)
+        if (response.ok) { goto(`${IP}/editor/${categoryId}/${subCategoryId}`) }
+    }
+
+    button.id = "deleteButton"
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    button.id = ""
 }

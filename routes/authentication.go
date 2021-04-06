@@ -8,11 +8,10 @@ import (
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/satori/go.uuid"
-	"minera/logs"
 	"minera/data"
 )
 
-type credentials struct {
+type Credentials struct {
 	Username string `json:username`
 	Password string `json:password`
 }
@@ -20,22 +19,14 @@ type credentials struct {
 
 func Authentication(writer http.ResponseWriter, request *http.Request) {
 	// parse request
-	var userData credentials
+	var userData Credentials
 	requestData, err := ioutil.ReadAll(request.Body)
-	if err != nil {
-		logs.Errors.Println(err)
-		http.Error(writer, "Възникна грешка", 502)
-		return
-	}
+	if err != nil { data.Log(err, writer); return }
 	json.Unmarshal(requestData, &userData)
 
 	// connect to database
 	db, err := sql.Open("postgres", data.ConnectionString)
-	if err != nil {
-		logs.Errors.Println(err)
-		http.Error(writer, "Възникна грешка", 502)
-		return
-	}
+	if err != nil { data.Log(err, writer); return }
 	defer db.Close()
 
 	// validate username
@@ -52,11 +43,7 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 	var attempts int
 	err = db.QueryRow(`SELECT password, attempts FROM users
 	WHERE username = $1`, username).Scan(&hash, &attempts)
-	if err != nil {
-		logs.Errors.Println(err)
-		http.Error(writer, "Възникна грешка", 502)
-		return
-	}
+	if err != nil { data.Log(err, writer); return }
 
 	// validate attempts
 	if attempts == data.MaxAttempts {
@@ -82,11 +69,7 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 
 	// write session ID to DB
 	_, err = db.Exec(`INSERT INTO sessions (session_id) VALUES ($1)`, sessionId)
-	if err != nil {
-		logs.Errors.Println(err)
-		http.Error(writer, "Възникна грешка", 502)
-		return
-	}
+	if err != nil { data.Log(err, writer); return }
 
 	// handle response
 	http.SetCookie(writer, &cookie)
@@ -98,11 +81,7 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 func writeResponse(writer http.ResponseWriter, response string) {
 	writer.Header().Set("content-type", "application/json")
 	output, err := json.Marshal(response)
-	if err != nil {
-		logs.Errors.Println(err)
-		http.Error(writer, "Възникна грешка", 502)
-		return
-	}
+	if err != nil { data.Log(err, writer); return }
 	writer.Write(output)
 }
 
@@ -110,9 +89,5 @@ func writeResponse(writer http.ResponseWriter, response string) {
 func updateAttempts(writer http.ResponseWriter, db *sql.DB, attempts int, username string) {
 	_, err := db.Exec(`UPDATE users SET attempts = $1
 	WHERE username = $2`, attempts, username)
-	if err != nil {
-		logs.Errors.Println(err)
-		http.Error(writer, "Възникна грешка", 502)
-		return
-	}
+	if err != nil { data.Log(err, writer) }
 }
