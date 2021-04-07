@@ -1,7 +1,3 @@
-const output = document.getElementById("output")
-document.getElementById("username").focus()
-
-
 const validateCredentials = async () => {
 
     const username = document.getElementById("username").value
@@ -20,7 +16,7 @@ const validateCredentials = async () => {
     const data = newPackage("POST", userData)
     const response = await fetch(`${IP}/authentication`, data)
     if (response.ok) {
-        const status = await request.json()
+        const status = await response.json()
         if (status !== "ok") {
             output.innerHTML = status
             return

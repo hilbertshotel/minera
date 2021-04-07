@@ -48,25 +48,27 @@ const addProduct = async (categoryId, subCategoryId) => {
 
 
 // PUT
-const editProduct = async (categoryId, subCategoryId, id) => {
+const editProduct = async (categoryId, subCategoryId, id, oldName, oldDescription) => {
     const out = document.getElementById(`out${id}`)
 
-    const name = document.getElementById(id).value
-    if (!name) {
+    const newName = document.getElementById(id).value
+    if (!newName) {
         out.innerHTML = "ВЪВЕДЕТЕ ИМЕ"
         return
     }
     
-    const description = document.getElementById(`textarea${id}`).value
-    if (!description) {
+    const newDescription = document.getElementById(`textarea${id}`).value
+    if (!newDescription) {
         out.innerHTML = "ВЪВЕДЕТЕ ОПИСАНИЕ"
         return
     }
 
+    if (newName === oldName && newDescription === oldDescription) { return }
+
     const productData = {
         id: id,
-        name: name,
-        description: description,
+        name: newName,
+        description: newDescription,
         images: []
     }
 

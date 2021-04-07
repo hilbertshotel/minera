@@ -10,7 +10,7 @@
 
     <input id="{{.Id}}" value="{{.Name}}" placeholder="{{.Name}}" maxlength="50"><br>
     <textarea id="textarea{{.Id}}" spellcheck="false" placeholder="{{.Description}}" maxlength="300">{{.Description}}</textarea><br>
-    <button onclick="editProduct({{$categoryId}}, {{$subCategoryId}}, {{.Id}})">ЗАПАЗИ ПРОМЕНИТЕ</button>
+    <button onclick="editProduct({{$categoryId}}, {{$subCategoryId}}, {{.Id}}, {{.Name}}, {{.Description}})">ЗАПАЗИ ПРОМЕНИТЕ</button>
     <button onclick="deleteProduct({{$categoryId}}, {{$subCategoryId}}, {{.Id}}, this)">ИЗТРИЙ</button><br>
     <p class="output" id="out{{.Id}}"></p>
     <hr>

@@ -1,15 +1,15 @@
 store in:
-/lib/systemd/system/catalog.service
+/lib/systemd/system/minera.service
 
 reload systemd:
 sudo systemctl daemon-reload
 
 start and restart service:
-sudo systemctl start catalog.service
-sudo systemctl restart catalog.service
+sudo systemctl start minera.service
+sudo systemctl restart minera.service
 
 enable during startup:
-sudo systemctl enable catalog.service
+sudo systemctl enable minera.service
 
 check status:
-sydo systemctl status catalog.service
+sydo systemctl status minera.service
