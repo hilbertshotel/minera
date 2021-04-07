@@ -65,6 +65,7 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 		Name: data.CookieName,
 		Value: sessionId,
 		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
 	}
 
 	// write session ID to DB
