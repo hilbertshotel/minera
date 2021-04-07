@@ -8,11 +8,16 @@ import (
 	"minera/data"
 )
 
-func getSubCategories(db *sql.DB, writer http.ResponseWriter, categoryId int) {
+func GetSubCategories(db *sql.DB, writer http.ResponseWriter, categoryId int) (SubTempData, error) {
+	var subCategoriesData SubTempData
+	
 	// query database
 	rows, err := db.Query(`SELECT id, name FROM sub_categories
 	WHERE category_id = $1 ORDER BY id ASC`, categoryId)
-	if err != nil { data.Log(err, writer); return }
+	if err != nil {
+		data.Log(err, writer)
+		return subCategoriesData, err
+	}
 	defer rows.Close()
 
 	// package data
@@ -20,19 +25,22 @@ func getSubCategories(db *sql.DB, writer http.ResponseWriter, categoryId int) {
 	for rows.Next() {
 		sub := SubCategory{}
 		err = rows.Scan(&sub.Id, &sub.Name)
-		if err != nil { data.Log(err, writer); return }
+		if err != nil { data.Log(err, writer)
+			return subCategoriesData, err
+		}
 		subCategories = append(subCategories, sub)
 	}
 
 	// get parent name
 	var categoryName string
 	err = db.QueryRow(`SELECT name FROM categories WHERE id = $1`, categoryId).Scan(&categoryName)
-	if err != nil { data.Log(err, writer); return }
+	if err != nil {
+		data.Log(err, writer)
+		return subCategoriesData, err
+	}
 
-	// return template
-	temp := SubTempData{categoryId, categoryName, subCategories} 
-	err = data.EditorTemplates.ExecuteTemplate(writer, "subCategories.html", temp)
-	if err != nil { data.Log(err, writer) }
+	subCategoriesData = SubTempData{categoryId, categoryName, subCategories}
+	return subCategoriesData, nil
 }
 
 
@@ -52,14 +60,14 @@ func postSubCategory(db *sql.DB, writer http.ResponseWriter, request *http.Reque
 
 func putSubCategory(db *sql.DB, writer http.ResponseWriter, request *http.Request) {
 	// get request data
-	var SubCategoryData SubCategory
+	var subCategoryData SubCategory
 	requestData, err := ioutil.ReadAll(request.Body)
 	if err != nil { data.Log(err, writer); return }
-	json.Unmarshal(requestData, &SubCategoryData)
+	json.Unmarshal(requestData, &subCategoryData)
 
 	// edit category
 	_, err = db.Exec(`UPDATE sub_categories SET name = $1
-	WHERE id = $2`, SubCategoryData.Name, SubCategoryData.Id) 
+	WHERE id = $2`, subCategoryData.Name, subCategoryData.Id) 
 	if err != nil { data.Log(err, writer) }
 }
 

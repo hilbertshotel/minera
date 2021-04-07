@@ -18,8 +18,8 @@ const validateCredentials = async () => {
 
     const userData = { username: username, password: password }
     const data = newPackage("POST", userData)
-    const request = await fetch(`${IP}/authentication`, data)
-    if (request.ok) {
+    const response = await fetch(`${IP}/authentication`, data)
+    if (response.ok) {
         const status = await request.json()
         if (status !== "ok") {
             output.innerHTML = status

@@ -9,24 +9,24 @@
     {{range .Products}}
 
     <input id="{{.Id}}" value="{{.Name}}" placeholder="{{.Name}}" maxlength="50"><br>
-    <textarea spellcheck="false" placeholder="{{.Description}}" maxlength="300">{{.Description}}</textarea><br>
-    <input type="file" multiple accept="image/*"><br>
-    <button onclick="editProduct()">ЗАПАЗИ ПРОМЕНИТЕ</button>
+    <textarea id="textarea{{.Id}}" spellcheck="false" placeholder="{{.Description}}" maxlength="300">{{.Description}}</textarea><br>
+    <button onclick="editProduct({{$categoryId}}, {{$subCategoryId}}, {{.Id}})">ЗАПАЗИ ПРОМЕНИТЕ</button>
     <button onclick="deleteProduct({{$categoryId}}, {{$subCategoryId}}, {{.Id}}, this)">ИЗТРИЙ</button><br>
+    <p class="output" id="out{{.Id}}"></p>
     <hr>
 
     {{end}}
 
-    <input id="name" placeholder="Име на продукта" maxlength="50"><br>
+    <input autofocus id="name" placeholder="Име на продукта" maxlength="50"><br>
     <textarea id="description" placeholder="Описание на продукта" maxlength="300"></textarea><br>
     <input id="images" type="file" multiple accept="image/*"><br>
     <button onclick="addProduct({{$categoryId}}, {{$subCategoryId}})">ДОБАВИ</button><br>
 
-    <p id="output"></p>
+    <p class="output" id="output"></p>
     <br>
     <br>
 
-    <script src="/static/editor/products.js"></script>
     <script src="/static/editor/data.js"></script>
+    <script src="/static/editor/products.js"></script>
 </body>
 </html>

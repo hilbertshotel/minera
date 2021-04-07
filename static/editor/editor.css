@@ -21,7 +21,7 @@ textarea {
     width: 30%;
 }
 
-#output {
+.output {
     color: red;
     font-weight: bold;
 }

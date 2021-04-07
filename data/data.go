@@ -11,7 +11,7 @@ var EditorTemplates = template.Must(template.ParseGlob("templates/editor/*"))
 var CatalogTemplates = template.Must(template.ParseGlob("templates/catalog/*"))
 
 // IP ADDRESS
-const Address = "127.0.0.1:8000"
+const Address = "127.0.0.1:5252"
 
 // MAX LOGIN ATTEMPTS
 const MaxAttempts = 10
@@ -21,3 +21,6 @@ const ImageDir = "images/"
 
 // LOGGING FILES
 const logFile = "logs/errors.log"
+
+// COOKIE NAME
+const CookieName = "minera"

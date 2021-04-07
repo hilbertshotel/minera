@@ -1,5 +1,11 @@
-{{range .}}
+{{ template "header.html" . }}
 
-    <p>{{.Id}}. {{.Name}}</p>
+<div class="content" id="content">
+    
+    {{range .}}
+    <a class="category" href="{{.Id}}">{{.Name}}</a>
+    {{end}}
 
-{{end}}
+</div>
+
+{{ template "footer.html" . }}

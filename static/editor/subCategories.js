@@ -1,7 +1,3 @@
-const output = document.getElementById("output")
-document.getElementById("newSubCategoryInput").focus()
-
-
 // GET
 const getProducts = async (categoryId, id) => {
     goto(`${IP}/editor/${categoryId}/${id}`)
@@ -17,8 +13,8 @@ const addSubCategory = async (categoryId) => {
     }
 
     const data = newPackage("POST", newSubCategory)
-    const request = await fetch(`${IP}/editor/${categoryId}`, data)
-    if (request.ok) { goto(`${IP}/editor/${categoryId}`) }
+    const response = await fetch(`${IP}/editor/${categoryId}`, data)
+    if (response.ok) { goto(`${IP}/editor/${categoryId}`) }
 }
 
 
@@ -29,8 +25,8 @@ const renameSubCategory = async (categoryId, id, oldName) => {
     if (newName === oldName || !newName) { return }
 
     const data = newPackage("PUT", { id: id, name: newName })
-    const request = await fetch(`${IP}/editor/${categoryId}`, data)
-    if (request.ok) { goto(`${IP}/editor/${categoryId}`) }
+    const response = await fetch(`${IP}/editor/${categoryId}`, data)
+    if (response.ok) { goto(`${IP}/editor/${categoryId}`) }
 }
 
 
@@ -38,8 +34,8 @@ const renameSubCategory = async (categoryId, id, oldName) => {
 const deleteSubCategory = async (categoryId, id, button) => {
     if (button.id === "deleteButton") {
         const data = newPackage("DELETE", id)
-        const request = await fetch(`${IP}/editor/${categoryId}`, data)
-        if (request.ok) { goto(`${IP}/editor/${categoryId}`) }
+        const response = await fetch(`${IP}/editor/${categoryId}`, data)
+        if (response.ok) { goto(`${IP}/editor/${categoryId}`) }
     }
 
     button.id = "deleteButton"

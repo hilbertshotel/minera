@@ -1,0 +1,11 @@
+[Unit]
+Description=minera
+
+[Service]
+Restart=always
+RestartSec=30s
+WorkingDirectory=/home/user/src/minera
+ExecStart=/home/user/src/minera/minera
+
+[Install]
+WantedBy=multi-user.target

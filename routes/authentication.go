@@ -62,7 +62,7 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 	// generate new session ID
 	sessionId := uuid.NewV4().String()
 	cookie := http.Cookie{
-		Name: "session",
+		Name: data.CookieName,
 		Value: sessionId,
 		HttpOnly: true,
 	}

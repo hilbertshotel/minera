@@ -12,8 +12,8 @@ import (
 func Editor(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "text/html")
 
-	// load login if no 'session' cookie is present
-	cookie, err := request.Cookie("session")
+	// load login if no cookie is present
+	cookie, err := request.Cookie(data.CookieName)
 	if err != nil {
 		err := data.EditorTemplates.ExecuteTemplate(writer, "login.html", nil)
 		if err != nil { data.Log(err, writer) }

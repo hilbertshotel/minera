@@ -1,7 +1,3 @@
-const output = document.getElementById("output")
-document.getElementById("name").focus()
-
-
 // POST
 const addProduct = async (categoryId, subCategoryId) => {
     const name = document.getElementById("name").value
@@ -52,7 +48,32 @@ const addProduct = async (categoryId, subCategoryId) => {
 
 
 // PUT
-const editProduct = () => {}
+const editProduct = async (categoryId, subCategoryId, id) => {
+    const out = document.getElementById(`out${id}`)
+
+    const name = document.getElementById(id).value
+    if (!name) {
+        out.innerHTML = "ВЪВЕДЕТЕ ИМЕ"
+        return
+    }
+    
+    const description = document.getElementById(`textarea${id}`).value
+    if (!description) {
+        out.innerHTML = "ВЪВЕДЕТЕ ОПИСАНИЕ"
+        return
+    }
+
+    const productData = {
+        id: id,
+        name: name,
+        description: description,
+        images: []
+    }
+
+    const data = newPackage("PUT", productData)
+    const response = await fetch(`${IP}/editor/${categoryId}/${subCategoryId}`, data)
+    if (response.ok) { goto(`${IP}/editor/${categoryId}/${subCategoryId}`) }
+}
 
 
 // DELETE

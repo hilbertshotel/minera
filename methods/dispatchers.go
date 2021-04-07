@@ -13,6 +13,7 @@ func CategoriesDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.
 		case http.MethodGet:
 			categories, err := GetCategories(db, writer)
 			if err != nil { return }
+
 			err = data.EditorTemplates.ExecuteTemplate(writer, "categories.html", categories)
 			if err != nil { data.Log(err, writer) }
 
@@ -26,7 +27,14 @@ func CategoriesDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.
 
 func SubCategoriesDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.Request, categoryId int) {
 	switch request.Method {
-		case http.MethodGet: getSubCategories(db, writer, categoryId)
+		
+		case http.MethodGet:
+			subCategories, err := GetSubCategories(db, writer, categoryId)
+			if err != nil { return }
+
+			err = data.EditorTemplates.ExecuteTemplate(writer, "sub_categories.html", subCategories)
+			if err != nil { data.Log(err, writer) }
+
 		case http.MethodPost: postSubCategory(db, writer, request, categoryId)
 		case http.MethodPut: putSubCategory(db, writer, request)
 		case http.MethodDelete: deleteSubCategory(db, writer, request)
@@ -37,9 +45,16 @@ func SubCategoriesDispatcher(db *sql.DB, writer http.ResponseWriter, request *ht
 
 func ProductsDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.Request, categoryId int, subCategoryId int) {
 	switch request.Method {
-		case http.MethodGet: getProducts(db, writer, categoryId, subCategoryId)
+
+		case http.MethodGet:
+			products, err := GetProducts(db, writer, categoryId, subCategoryId)
+			if err != nil { return }
+
+			err = data.EditorTemplates.ExecuteTemplate(writer, "products.html", products)
+			if err != nil { data.Log(err, writer) }
+
 		case http.MethodPost: postProduct(db, writer, request)
-		// case http.MethodPut: put(writer, request)
+		case http.MethodPut: putProduct(db, writer, request)
 		case http.MethodDelete: deleteProduct(db, writer, request)
 		default: http.Error(writer, "Възникна грешка", 405)
 	}

@@ -37,5 +37,3 @@ CREATE TABLE products (
 
 -- \i C:/Users/kolu/src/minera/catalog/minera_catalog.sql -- win
 -- \i /home/kolu/src/minera/setup/psql/minera_catalog.sql -- unix
-
--- ON DELETE CASCADE

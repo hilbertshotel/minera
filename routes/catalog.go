@@ -3,8 +3,8 @@ package routes
 import (
 	"net/http"
 	"database/sql"
-	// "strings"
-	// "strconv"
+	"strings"
+	"strconv"
 	"minera/data"
 	"minera/methods"
 )
@@ -15,8 +15,9 @@ func Catalog(writer http.ResponseWriter, request *http.Request) {
 	if err != nil { data.Log(err, writer); return }
 	defer db.Close()
 	
-	// handle categories
 	url := request.URL.Path[1:]
+
+	// handle categories
 	if url == "" {
 		categories, err := methods.GetCategories(db, writer)
 		if err != nil { return }
@@ -27,26 +28,38 @@ func Catalog(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// // handle sub categories
-	// urlArray := strings.Split(url, "/")
-	// if len(urlArray) == 2 {
-	// 	id, err := strconv.Atoi(urlArray[1])
-	// 	if err != nil { data.Log(err, writer); return }
-	// 	methods.SubCategoriesDispatcher(writer, request, id)
-	// 	return
-	// }
+	urlArray := strings.Split(url, "/")
 
-	// // handle products
-	// if len(urlArray) == 3 {
-	// 	categoryId, err := strconv.Atoi(urlArray[1])
-	// 	if err != nil { data.Log(err, writer); return }
+	// handle sub categories
+	if len(urlArray) == 1 {
+		categoryId, err := strconv.Atoi(urlArray[0])
+		if err != nil { data.Log(err, writer); return }
 
-	// 	subCategoryId, err := strconv.Atoi(urlArray[2])
-	// 	if err != nil { data.Log(err, writer); return }
+		subCategories, err := methods.GetSubCategories(db, writer, categoryId)
+		if err != nil { return }
+
+		err = data.CatalogTemplates.ExecuteTemplate(writer, "sub_categories.html", subCategories)
+		if err != nil { data.Log(err, writer) }
+
+		return
+	}
+
+	// handle products
+	if len(urlArray) == 2 {
+		categoryId, err := strconv.Atoi(urlArray[0])
+		if err != nil { data.Log(err, writer); return }
+
+		subCategoryId, err := strconv.Atoi(urlArray[1])
+		if err != nil { data.Log(err, writer); return }
 	
-	// 	methods.ProductsDispatcher(writer, request, categoryId, subCategoryId)
-	// 	return
-	// }
+		products, err := methods.GetProducts(db, writer, categoryId, subCategoryId)
+		if err != nil { return }
+
+		err = data.CatalogTemplates.ExecuteTemplate(writer, "products.html", products)
+		if err != nil { data.Log(err, writer) }
+		
+		return
+	}
 
 	http.Error(writer, "Страницата не съществува", 404)
 }

@@ -1,0 +1,22 @@
+{{ template "header.html" . }}
+
+<div class="content" id="content">
+    
+    {{range .Products}}
+
+    <h1>{{.Name}}</h1>
+    <pre>{{.Description}}</pre>
+    
+        <div class="images">
+            {{range .Images}}
+            <img src="../{{.}}">
+            {{end}}
+        </div>
+
+    {{end}}
+
+    <button id="backButton" onclick="goBack()">ОБРАТНО</button>
+
+</div>
+
+{{ template "footer.html" . }}
