@@ -26,7 +26,7 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 
 	// editor access log
 	data.LogAccess(request, userData.Username)
-
+	
 	// connect to database
 	db, err := sql.Open("postgres", data.ConnectionString)
 	if err != nil { data.LogErr(err, writer); return }

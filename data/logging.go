@@ -56,7 +56,7 @@ DATETIME: %s
 USERNAME: %s
 REMOTE ADDRESS: %s
 USER AGENT: %s
-`, t, username, request.RemoteAddr, request.UserAgent())
+`, t, username, request.Header.Get("X-Forwarded-For"), request.UserAgent())
 
 	// open file
 	file, err := os.OpenFile(accessLog, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -81,7 +81,7 @@ DATETIME: %s
 URL: %s
 REMOTE ADDRESS: %s
 USER AGENT: %s
-`, t, request.URL.Path, request.RemoteAddr, request.UserAgent())
+`, t, request.URL.Path, request.Header.Get("X-Forwarded-For"), request.UserAgent())
 
 	// open file
 	file, err := os.OpenFile(requestLog, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
