@@ -20,7 +20,9 @@ const MaxAttempts = 10
 const ImageDir = "images/"
 
 // LOGGING FILES
-const logFile = "logs/errors.log"
+const errorLog = "logs/errors.log"
+const accessLog = "logs/access.log"
+const requestLog = "logs/request.log"
 
 // COOKIE NAME
 const CookieName = "minera"

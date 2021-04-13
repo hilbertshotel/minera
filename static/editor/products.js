@@ -12,8 +12,7 @@ const addProduct = async (categoryId, subCategoryId) => {
         return
     }
     
-    const imagesTag = document.getElementById("images")
-    const files = imagesTag.files
+    const files = document.getElementById("images").files
     if (files.length === 0) { 
         output.innerHTML = "ДОБАВЕТЕ ПОНЕ ЕДНО ИЗОБРАЖЕНИЕ"
         return
@@ -23,26 +22,23 @@ const addProduct = async (categoryId, subCategoryId) => {
         return
     }
 
-    let filenameArray = []
-    const images = new FormData()
-    for (const file of files) {
-        images.append("files", file)
-        filenameArray.push(file.name)
-    }
-
     const newProduct = {
         id: subCategoryId,
         name: name,
         description: description,
-        images: filenameArray
+        images: []
     }
 
-    const data = { method: "POST", body: images }
-    const response1 = await fetch(`${IP}/files`, data)
+    const images = new FormData()
+    for (const file of files) {
+        images.append("files", file)
+        newProduct.images.push(file.name)
+    }
+
+    const imagesPackage = { method: "POST", body: images }
+    const response1 = await fetch(`${IP}/files`, imagesPackage)
     if (response1.ok) {
-        const data = newPackage("POST", newProduct)
-        const response2 = await fetch(`${IP}/editor/${categoryId}/${subCategoryId}`, data)
-        if (response2.ok) { goto(`${IP}/editor/${categoryId}/${subCategoryId}`) }
+        sendProductData("POST", newProduct, categoryId, subCategoryId)
     }
 }
 
@@ -63,8 +59,14 @@ const editProduct = async (categoryId, subCategoryId, id, oldName, oldDescriptio
         return
     }
 
-    if (newName === oldName && newDescription === oldDescription) { return }
+    const files = document.getElementById(`images${id}`).files
+    if (newName === oldName && newDescription === oldDescription && files.length === 0) { return }
 
+    if (files.length > 3) {
+        out.innerHTML = "ИЗБРАЛИ СТЕ ПОВЕЧЕ ОТ ТРИ ИЗОБРАЖЕНИЯ"
+        return
+    }
+    
     const productData = {
         id: id,
         name: newName,
@@ -72,18 +74,30 @@ const editProduct = async (categoryId, subCategoryId, id, oldName, oldDescriptio
         images: []
     }
 
-    const data = newPackage("PUT", productData)
-    const response = await fetch(`${IP}/editor/${categoryId}/${subCategoryId}`, data)
-    if (response.ok) { goto(`${IP}/editor/${categoryId}/${subCategoryId}`) }
+    if (files.length > 0) {
+        const images = new FormData()
+
+        for (const file of files) {
+            images.append("files", file)
+            productData.images.push(file.name)
+        }
+
+        const imagesPackage = { method: "POST", body: images }
+        const response = await fetch(`${IP}/files`, imagesPackage)
+        if (response.ok) {
+            sendProductData("PUT", productData, categoryId, subCategoryId)
+        }
+        return
+    }
+    
+    sendProductData("PUT", productData, categoryId, subCategoryId)
 }
 
 
 // DELETE
 const deleteProduct = async (categoryId, subCategoryId, id, button) => {
     if (button.id === "deleteButton") {
-        const data = newPackage("DELETE", id)
-        const response = await fetch(`${IP}/editor/${categoryId}/${subCategoryId}`, data)
-        if (response.ok) { goto(`${IP}/editor/${categoryId}/${subCategoryId}`) }
+        sendProductData("DELETE", id, categoryId, subCategoryId)
     }
 
     button.id = "deleteButton"

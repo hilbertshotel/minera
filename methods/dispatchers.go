@@ -15,7 +15,7 @@ func CategoriesDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.
 			if err != nil { return }
 
 			err = data.EditorTemplates.ExecuteTemplate(writer, "categories.html", categories)
-			if err != nil { data.Log(err, writer) }
+			if err != nil { data.LogErr(err, writer) }
 
 		case http.MethodPost: postCategory(db, writer, request)
 		case http.MethodPut: putCategory(db, writer, request)
@@ -33,7 +33,7 @@ func SubCategoriesDispatcher(db *sql.DB, writer http.ResponseWriter, request *ht
 			if err != nil { return }
 
 			err = data.EditorTemplates.ExecuteTemplate(writer, "sub_categories.html", subCategories)
-			if err != nil { data.Log(err, writer) }
+			if err != nil { data.LogErr(err, writer) }
 
 		case http.MethodPost: postSubCategory(db, writer, request, categoryId)
 		case http.MethodPut: putSubCategory(db, writer, request)
@@ -51,7 +51,7 @@ func ProductsDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.Re
 			if err != nil { return }
 
 			err = data.EditorTemplates.ExecuteTemplate(writer, "products.html", products)
-			if err != nil { data.Log(err, writer) }
+			if err != nil { data.LogErr(err, writer) }
 
 		case http.MethodPost: postProduct(db, writer, request)
 		case http.MethodPut: putProduct(db, writer, request)

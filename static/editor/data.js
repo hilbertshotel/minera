@@ -15,3 +15,9 @@ const newPackage = (method, data) => {
 const goto = (url) => {
     window.location.href = url
 }
+
+const sendProductData = async (method, productData, categoryId, subCategoryId) => {
+    const productPackage = newPackage(method, productData)
+    const response = await fetch(`${IP}/editor/${categoryId}/${subCategoryId}`, productPackage)
+    if (response.ok) { goto(`${IP}/editor/${categoryId}/${subCategoryId}`) }
+}

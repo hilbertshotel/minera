@@ -1,17 +1,24 @@
+use instructions:
+    can't have images with the same name
+    when editing products - if you don't add images, they will not be changed
+    else you have to add all images
+
 UML
 
-simple image formatting
-
-admin user
+analytics
 
 telemetry:
-new errors in log file
-life status of all services
-including nginx & postgres
-
-access.log
+    new errors in log file
+    life status of all services
+    including nginx & postgres
 
 BIN TO CLEAR DATA:
     - sessions
     - access log
-    - image folder according to images arrays in database
+    - request log
+    - image folder according to image arrays in database
+
+BACKUP:
+    - DB
+    - images folder
+    - /etc/letsencrypt

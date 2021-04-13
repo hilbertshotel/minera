@@ -16,13 +16,13 @@ func Editor(writer http.ResponseWriter, request *http.Request) {
 	cookie, err := request.Cookie(data.CookieName)
 	if err != nil {
 		err := data.EditorTemplates.ExecuteTemplate(writer, "login.html", nil)
-		if err != nil { data.Log(err, writer) }
+		if err != nil { data.LogErr(err, writer) }
 		return
 	}
 
 	// connect to database
 	db, err := sql.Open("postgres", data.ConnectionString)
-	if err != nil { data.Log(err, writer); return }
+	if err != nil { data.LogErr(err, writer); return }
 	defer db.Close()
 
 	// check if session ID is in sessions else load login
@@ -30,7 +30,7 @@ func Editor(writer http.ResponseWriter, request *http.Request) {
 	err = db.QueryRow(`SELECT session_id FROM sessions WHERE session_id = $1`, cookie.Value).Scan(&id)
 	if err != nil {
 		err := data.EditorTemplates.ExecuteTemplate(writer, "login.html", nil)
-		if err != nil { data.Log(err, writer) }
+		if err != nil { data.LogErr(err, writer) }
 		return
 	}
 
@@ -45,7 +45,7 @@ func Editor(writer http.ResponseWriter, request *http.Request) {
 	urlArray := strings.Split(url, "/")
 	if len(urlArray) == 2 {
 		categoryId, err := strconv.Atoi(urlArray[1])
-		if err != nil { data.Log(err, writer); return }
+		if err != nil { data.LogRequest(writer, request); return }
 		methods.SubCategoriesDispatcher(db, writer, request, categoryId)
 		return
 	}
@@ -53,10 +53,10 @@ func Editor(writer http.ResponseWriter, request *http.Request) {
 	// handle products
 	if len(urlArray) == 3 {
 		categoryId, err := strconv.Atoi(urlArray[1])
-		if err != nil { data.Log(err, writer); return }
+		if err != nil { data.LogRequest(writer, request); return }
 
 		subCategoryId, err := strconv.Atoi(urlArray[2])
-		if err != nil { data.Log(err, writer); return }
+		if err != nil { data.LogRequest(writer, request); return }
 	
 		methods.ProductsDispatcher(db, writer, request, categoryId, subCategoryId)
 		return
