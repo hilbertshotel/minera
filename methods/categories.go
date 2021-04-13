@@ -9,23 +9,22 @@ import (
 )
 
 func GetCategories(db *sql.DB, writer http.ResponseWriter) ([]Category, error) {
-	var categories []Category
-	
 	// query database
 	rows, err := db.Query("SELECT id, name FROM categories ORDER BY id ASC")
 	if err != nil {
 		data.LogErr(err, writer)
-		return categories, err
+		return nil, err
 	}
 	defer rows.Close()
 
 	// package data
+	var categories []Category
 	for rows.Next() {
 		category := Category{}
 		err = rows.Scan(&category.Id, &category.Name)
 		if err != nil {
 			data.LogErr(err, writer)
-			return categories, err
+			return nil, err
 		}
 		categories = append(categories, category)
 	}
