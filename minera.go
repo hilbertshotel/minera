@@ -93,6 +93,7 @@ func service() error {
 		routes.FileTransfer(w, r, log, cfg.ImgDir)
 	})
 
+	http.Handle("/minera.log", http.FileServer(http.Dir("./logs/")))
 
 	// Server
 	// ==================================================
