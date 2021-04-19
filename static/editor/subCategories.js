@@ -12,7 +12,12 @@ const addSubCategory = async (categoryId) => {
         return
     }
 
-    const data = newPackage("POST", newSubCategory)
+    const subCategory = {
+        Id: categoryId,
+        Name: newSubCategory,
+    }
+
+    const data = newPackage("POST", subCategory)
     const response = await fetch(`${IP}/editor/${categoryId}`, data)
     if (response.ok) { goto(`${IP}/editor/${categoryId}`) }
 }

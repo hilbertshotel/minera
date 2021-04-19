@@ -1,3 +1,6 @@
+-- \i C:/Users/kolu/src/minera/setup/psql/minera_catalog.sql -- win
+-- \i /home/kolu/src/minera/setup/psql/minera_catalog.sql -- unix
+
 CREATE DATABASE minera_catalog;
 
 \c minera_catalog;
@@ -34,6 +37,3 @@ CREATE TABLE products (
     images TEXT [],
     added TIMESTAMPTZ NOT NULL
 );
-
--- \i C:/Users/kolu/src/minera/catalog/minera_catalog.sql -- win
--- \i /home/kolu/src/minera/setup/psql/minera_catalog.sql -- unix

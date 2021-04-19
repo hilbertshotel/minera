@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 	"io/ioutil"
 	"database/sql"
@@ -8,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/satori/go.uuid"
-	"minera/data"
+	"minera/conf"
 )
 
 type Credentials struct {
@@ -16,20 +17,29 @@ type Credentials struct {
 	Password string `json:password`
 }
 
+func Authentication(
+	w http.ResponseWriter,
+	r *http.Request,
+	log *log.Logger,
+	cfg *conf.Config) {
 
-func Authentication(writer http.ResponseWriter, request *http.Request) {
 	// parse request
 	var userData Credentials
-	requestData, err := ioutil.ReadAll(request.Body)
-	if err != nil { data.LogErr(err, writer); return }
-	json.Unmarshal(requestData, &userData)
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Backend Error", 502)
+		log.Println("ERROR:", err)
+		return
+	}
+	json.Unmarshal(request, &userData)
 
-	// editor access log
-	data.LogAccess(request, userData.Username)
-	
 	// connect to database
-	db, err := sql.Open("postgres", data.ConnectionString)
-	if err != nil { data.LogErr(err, writer); return }
+	db, err := sql.Open("postgres", cfg.ConnStr)
+	if err != nil {
+		http.Error(w, "Backend Error", 502)
+		log.Println("ERROR:", err)
+		return
+	}
 	defer db.Close()
 
 	// validate username
@@ -37,7 +47,8 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 	err = db.QueryRow(`SELECT username FROM users
 	WHERE username = $1`, userData.Username).Scan(&username)
 	if err != nil {
-		writeResponse(writer, "НЕВАЛИДЕН ПОТРЕБИТЕЛ")
+		writeResponse(w, "НЕВАЛИДЕН ПОТРЕБИТЕЛ", log)
+		log.Println("WARNING: registered login attempt by unknown user", userData.Username)
 		return
 	}
 
@@ -46,26 +57,30 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 	var attempts int
 	err = db.QueryRow(`SELECT password, attempts FROM users
 	WHERE username = $1`, username).Scan(&hash, &attempts)
-	if err != nil { data.LogErr(err, writer); return }
+	if err != nil {
+		http.Error(w, "Backend Error", 502)
+		log.Println("ERROR:", err)
+		return
+	}
 
 	// validate attempts
-	if attempts == data.MaxAttempts {
-		writeResponse(writer, "ПРЕВИШИЛИ СТЕ ОПИТИТЕ ЗА ДОСТЪП")
+	if attempts == cfg.MaxAtt {
+		writeResponse(w, "ПРЕВИШИЛИ СТЕ ОПИТИТЕ ЗА ДОСТЪП", log)
 		return 
 	}
 
 	// validate password
 	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(userData.Password))
 	if err != nil {
-		updateAttempts(writer, db, attempts+1, username)
-		writeResponse(writer, "ГРЕШНА ПАРОЛА")
+		updateAttempts(w, db, attempts+1, username, log)
+		writeResponse(w, "ГРЕШНА ПАРОЛА", log)
 		return
 	}
 
 	// generate new session ID
 	sessionId := uuid.NewV4().String()
 	cookie := http.Cookie{
-		Name: data.CookieName,
+		Name: cfg.CookieName,
 		Value: sessionId,
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
@@ -73,25 +88,39 @@ func Authentication(writer http.ResponseWriter, request *http.Request) {
 
 	// write session ID to DB
 	_, err = db.Exec(`INSERT INTO sessions (session_id) VALUES ($1)`, sessionId)
-	if err != nil { data.LogErr(err, writer); return }
+	if err != nil {
+		http.Error(w, "Backend Error", 502)
+		log.Println("ERROR:", err)
+		return
+	}
 
 	// handle response
-	http.SetCookie(writer, &cookie)
-	updateAttempts(writer, db, 0, username)
-	writeResponse(writer, "ok")
+	log.Println("successful login")
+	http.SetCookie(w, &cookie)
+	updateAttempts(w, db, 0, username, log)
+	writeResponse(w, "ok", log)
 }
 
 
-func writeResponse(writer http.ResponseWriter, response string) {
-	writer.Header().Set("content-type", "application/json")
+func writeResponse(w http.ResponseWriter, response string, log *log.Logger) {
 	output, err := json.Marshal(response)
-	if err != nil { data.LogErr(err, writer); return }
-	writer.Write(output)
+	if err != nil {
+		http.Error(w, "Backend Error", 502)
+		log.Println(err)
+		return
+	}
+
+	w.Header().Set("content-type", "application/json")
+	w.Write(output)
 }
 
 
-func updateAttempts(writer http.ResponseWriter, db *sql.DB, attempts int, username string) {
+func updateAttempts(w http.ResponseWriter, db *sql.DB, attempts int, name string, log *log.Logger) {
 	_, err := db.Exec(`UPDATE users SET attempts = $1
-	WHERE username = $2`, attempts, username)
-	if err != nil { data.LogErr(err, writer) }
+	WHERE username = $2`, attempts, name)
+	if err != nil {
+		http.Error(w, "Backend Error", 502)
+		log.Println("ERROR:", err)
+		return
+	}
 }

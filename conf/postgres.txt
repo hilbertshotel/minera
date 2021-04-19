@@ -1,0 +1,7 @@
+CONNECTION STRING FOR POSTGRES
+
+UNIX:
+"user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql"
+
+WIN:
+"user=postgres dbname=minera_catalog sslmode=disable"

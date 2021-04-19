@@ -6,16 +6,11 @@ use instructions:
 UML
 
 analytics
-
-telemetry:
-    new errors in log file
-    life status of all services
-    including nginx & postgres
+telemetry
 
 BIN TO CLEAR DATA:
     - sessions
-    - access log
-    - request log
+    - log
     - image folder according to image arrays in database
 
 BACKUP:

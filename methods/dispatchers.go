@@ -2,60 +2,118 @@ package methods
 
 import (
 	"net/http"
-	"minera/data"
 	"database/sql"
+	"log"
+	"html/template"
+	"errors"
 )
 
+func CategoriesDispatcher(
+	w http.ResponseWriter,
+	r *http.Request,
+	log *log.Logger,
+	db *sql.DB,
+	tmp *template.Template) error {
 
-func CategoriesDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.Request) {
-	switch request.Method {
+	switch r.Method {
 
 		case http.MethodGet:
-			categories, err := GetCategories(db, writer)
-			if err != nil { return }
+			categories, err := GetCategories(log, db)
+			if err != nil {
+				return err
+			}
 
-			err = data.EditorTemplates.ExecuteTemplate(writer, "categories.html", categories)
-			if err != nil { data.LogErr(err, writer) }
+			if err := tmp.ExecuteTemplate(w, "categories.html", categories); err != nil {
+				log.Println("ERROR:", err)
+				return err
+			}
 
-		case http.MethodPost: postCategory(db, writer, request)
-		case http.MethodPut: putCategory(db, writer, request)
-		case http.MethodDelete: deleteCategory(db, writer, request)
-		default: http.Error(writer, "Възникна грешка", 405)
+		case http.MethodPost:
+			return postCategory(db, r, log)
+		case http.MethodPut:
+			return putCategory(db, r, log)
+		case http.MethodDelete:
+			return deleteCategory(db, r, log)
+		default:
+			log.Printf("ERROR: unsupported method `%v`\n", r.Method)
+			return errors.New("err")
 	}
+
+	return nil
 }
 
 
-func SubCategoriesDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.Request, categoryId int) {
-	switch request.Method {
+func SubCategoriesDispatcher(
+	w http.ResponseWriter,
+	r *http.Request,
+	log *log.Logger,
+	db *sql.DB,
+	tmp *template.Template,
+	catId int) error {
+
+	switch r.Method {
 		
 		case http.MethodGet:
-			subCategories, err := GetSubCategories(db, writer, categoryId)
-			if err != nil { return }
+			subCategories, err := GetSubCategories(log, db, catId)
+			if err != nil {
+				return err
+			}
 
-			err = data.EditorTemplates.ExecuteTemplate(writer, "sub_categories.html", subCategories)
-			if err != nil { data.LogErr(err, writer) }
+			err = tmp.ExecuteTemplate(w, "sub_categories.html", subCategories)
+			if err != nil {
+				log.Println("ERROR:", err)
+				return err
+			}
 
-		case http.MethodPost: postSubCategory(db, writer, request, categoryId)
-		case http.MethodPut: putSubCategory(db, writer, request)
-		case http.MethodDelete: deleteSubCategory(db, writer, request)
-		default: http.Error(writer, "Възникна грешка", 405)
+		case http.MethodPost:
+			return postSubCategory(db, r, log)
+		case http.MethodPut:
+			return putSubCategory(db, r, log)
+		case http.MethodDelete:
+			return deleteSubCategory(db, r, log)
+		default:
+			log.Printf("ERROR: unsupported method `%v`\n", r.Method)
+			return errors.New("err")
 	}
+
+	return nil
 }
 
 
-func ProductsDispatcher(db *sql.DB, writer http.ResponseWriter, request *http.Request, categoryId int, subCategoryId int) {
-	switch request.Method {
+func ProductsDispatcher(
+	w http.ResponseWriter,
+	r *http.Request,
+	log *log.Logger,
+	db *sql.DB,
+	tmp *template.Template,
+	catId int,
+	subId int,
+	imgDir string) error {
+
+	switch r.Method {
 
 		case http.MethodGet:
-			products, err := GetProducts(db, writer, categoryId, subCategoryId)
-			if err != nil { return }
+			products, err := GetProducts(log, db, catId, subId)
+			if err != nil {
+				return err
+			}
 
-			err = data.EditorTemplates.ExecuteTemplate(writer, "products.html", products)
-			if err != nil { data.LogErr(err, writer) }
+			err = tmp.ExecuteTemplate(w, "products.html", products)
+			if err != nil {
+				log.Println("ERROR:", err)
+				return err
+			}
 
-		case http.MethodPost: postProduct(db, writer, request)
-		case http.MethodPut: putProduct(db, writer, request)
-		case http.MethodDelete: deleteProduct(db, writer, request)
-		default: http.Error(writer, "Възникна грешка", 405)
+		case http.MethodPost:
+			return postProduct(db, r, log, imgDir)
+		case http.MethodPut: 
+			return putProduct(db, r, log, imgDir)
+		case http.MethodDelete: 
+			return deleteProduct(db, r, log)
+		default: 	
+			log.Printf("ERROR: unsupported method `%v`\n", r.Method)
+			errors.New("err")
 	}
+
+	return nil
 }

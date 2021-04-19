@@ -1,65 +1,112 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 	"database/sql"
 	"strings"
 	"strconv"
-	"minera/data"
+	"html/template"
 	"minera/methods"
 )
 
-func Catalog(writer http.ResponseWriter, request *http.Request) {
-	// connect to database
-	db, err := sql.Open("postgres", data.ConnectionString)
-	if err != nil { data.LogErr(err, writer); return }
+func Catalog(
+	w http.ResponseWriter,
+	r *http.Request,
+	log *log.Logger,
+	conn string,
+	tmp *template.Template) {
+
+	// Database Connection
+	// ==================================================
+
+	db, err := sql.Open("postgres", conn)
+	if err != nil {
+		http.Error(w, "Backend Error", 502)
+		log.Println("ERROR:", err)
+		return	
+	}
 	defer db.Close()
 	
-	url := request.URL.Path[1:]
 
-	// handle categories
+	// Handle Categories
+	// ==================================================
+
+	url := r.URL.Path[1:]
+
 	if url == "" {
-		categories, err := methods.GetCategories(db, writer)
-		if err != nil { return }
+		categories, err := methods.GetCategories(log, db)
+		if err != nil {
+			http.Error(w, "Backend Error", 502)
+			return
+		}
 		
-		err = data.CatalogTemplates.ExecuteTemplate(writer, "categories.html", categories)
-		if err != nil { data.LogErr(err, writer) }
+		if err := tmp.ExecuteTemplate(w, "categories.html", categories); err != nil {
+			http.Error(w, "Backend Error", 502)
+			log.Println("ERROR:", err)
+		}
 
 		return
 	}
+
+
+	// Handle Sub Categories
+	// ==================================================
 
 	urlArray := strings.Split(url, "/")
 
-	// handle sub categories
 	if len(urlArray) == 1 {
-		categoryId, err := strconv.Atoi(urlArray[0])
-		if err != nil { data.LogRequest(writer, request); return }
+		catId, err := strconv.Atoi(urlArray[0])
+		if err != nil {
+			http.Error(w, "Not Found", 404)
+			return
+		}
 
-		subCategories, err := methods.GetSubCategories(db, writer, categoryId)
-		if err != nil { return }
+		subCategories, err := methods.GetSubCategories(log, db, catId)
+		if err != nil {
+			http.Error(w, "Backend Error", 502)
+			return
+		}
 
-		err = data.CatalogTemplates.ExecuteTemplate(writer, "sub_categories.html", subCategories)
-		if err != nil { data.LogErr(err, writer) }
+		if err = tmp.ExecuteTemplate(w, "sub_categories.html", subCategories); err != nil {
+			http.Error(w, "Backend Error", 502)
+			log.Println("ERROR:", err)
+		}
 
 		return
 	}
 
-	// handle products
+
+	// Handle Products
+	// ==================================================
+
 	if len(urlArray) == 2 {
-		categoryId, err := strconv.Atoi(urlArray[0])
-		if err != nil { data.LogRequest(writer, request); return }
+		catId, err := strconv.Atoi(urlArray[0])
+		if err != nil {
+			http.Error(w, "Not Found", 404)
+			return
+		}
 
-		subCategoryId, err := strconv.Atoi(urlArray[1])
-		if err != nil { data.LogRequest(writer, request); return }
+		subId, err := strconv.Atoi(urlArray[1])
+		if err != nil {
+			http.Error(w, "Not Found", 404)
+			return
+		}
 	
-		products, err := methods.GetProducts(db, writer, categoryId, subCategoryId)
-		if err != nil { return }
+		products, err := methods.GetProducts(log, db, catId, subId)
+		if err != nil {
+			http.Error(w, "Backend Error", 502)
+			return
+		}
 
-		err = data.CatalogTemplates.ExecuteTemplate(writer, "products.html", products)
-		if err != nil { data.LogErr(err, writer) }
+		if err := tmp.ExecuteTemplate(w, "products.html", products); err != nil {
+			http.Error(w, "Backend Error", 502)
+			log.Println("ERROR:", err)
+		}
 		
 		return
 	}
 
-	http.Error(writer, "Страницата не съществува", 404)
+	
+	http.Error(w, "Not Found", 404)
 }

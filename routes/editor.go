@@ -1,66 +1,115 @@
 package routes
 
 import (
+	"log"
 	"strconv"
 	"strings"
 	"net/http"
 	"database/sql"
-	"minera/data"
+	"html/template"
 	"minera/methods"
+	"minera/conf"
 )
 
-func Editor(writer http.ResponseWriter, request *http.Request) {
-	writer.Header().Set("Content-Type", "text/html")
+func Editor(
+	w http.ResponseWriter,
+	r *http.Request,
+	log *log.Logger,
+	cfg *conf.Config,
+	tmp *template.Template) {
 
-	// load login if no cookie is present
-	cookie, err := request.Cookie(data.CookieName)
+	// Database Connection
+	// ==================================================
+
+	db, err := sql.Open("postgres", cfg.ConnStr)
 	if err != nil {
-		err := data.EditorTemplates.ExecuteTemplate(writer, "login.html", nil)
-		if err != nil { data.LogErr(err, writer) }
+		http.Error(w, "Backend Error", 502)
+		log.Println("ERROR:", err)
 		return
 	}
-
-	// connect to database
-	db, err := sql.Open("postgres", data.ConnectionString)
-	if err != nil { data.LogErr(err, writer); return }
 	defer db.Close()
 
-	// check if session ID is in sessions else load login
-	var id string
-	err = db.QueryRow(`SELECT session_id FROM sessions WHERE session_id = $1`, cookie.Value).Scan(&id)
+
+	// Validation
+	// ==================================================
+
+	cookie, err := r.Cookie(cfg.CookieName)
 	if err != nil {
-		err := data.EditorTemplates.ExecuteTemplate(writer, "login.html", nil)
-		if err != nil { data.LogErr(err, writer) }
+		if err := tmp.ExecuteTemplate(w, "login.html", nil); err != nil {
+			http.Error(w, "Backend Error", 502)
+			log.Println("ERROR:", err)
+		}
 		return
 	}
 
-	// handle categories
-	url := request.URL.Path[1:]
+	var id string
+	if err := db.QueryRow(`SELECT session_id FROM sessions
+	WHERE session_id = $1`, cookie.Value).Scan(&id); err != nil {
+		if err := tmp.ExecuteTemplate(w, "login.html", nil); err != nil {
+			http.Error(w, "Backend Error", 502)
+			log.Println("ERROR:", err)
+		}
+		return
+	}
+
+
+	// Handle Categories
+	// ==================================================
+
+	url := r.URL.Path[1:]
+
 	if url == "editor/" {
-		methods.CategoriesDispatcher(db, writer, request)
+		err = methods.CategoriesDispatcher(w, r, log, db, tmp)
+		if err != nil {
+			http.Error(w, "Backend Error", 502)
+		}
 		return
 	}
 
-	// handle sub categories
+
+	// Handle Sub Categories
+	// ==================================================
+
 	urlArray := strings.Split(url, "/")
+
 	if len(urlArray) == 2 {
-		categoryId, err := strconv.Atoi(urlArray[1])
-		if err != nil { data.LogRequest(writer, request); return }
-		methods.SubCategoriesDispatcher(db, writer, request, categoryId)
+		catId, err := strconv.Atoi(urlArray[1])
+		if err != nil {
+			http.Error(w, "Not Found", 404)
+			return
+		}
+
+		err = methods.SubCategoriesDispatcher(w, r, log, db, tmp, catId)
+		if err != nil {
+			http.Error(w, "Backend Error", 502)
+		}
 		return
 	}
 
-	// handle products
+
+	// Handle Products
+	// ==================================================
+
 	if len(urlArray) == 3 {
-		categoryId, err := strconv.Atoi(urlArray[1])
-		if err != nil { data.LogRequest(writer, request); return }
+		catId, err := strconv.Atoi(urlArray[1])
+		if err != nil {
+			http.Error(w, "Not Found", 404)
+			return
+		}
 
-		subCategoryId, err := strconv.Atoi(urlArray[2])
-		if err != nil { data.LogRequest(writer, request); return }
+		subId, err := strconv.Atoi(urlArray[2])
+		if err != nil {
+			http.Error(w, "Not Found", 404)
+			return
+		}
 	
-		methods.ProductsDispatcher(db, writer, request, categoryId, subCategoryId)
+		err = methods.ProductsDispatcher(w, r, log, db, tmp, catId, subId, cfg.ImgDir)
+		if err != nil {
+			http.Error(w, "Backend Error", 502)
+		}
 		return
 	}
 
-	http.Error(writer, "Страницата не съществува", 404)
+
+	http.Error(w, "Not Found", 404)
 }

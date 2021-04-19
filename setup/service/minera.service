@@ -6,6 +6,8 @@ Restart=always
 RestartSec=30s
 WorkingDirectory=/home/user/src/minera
 ExecStart=/home/user/src/minera/minera
+StandardOutput=append:/home/user/src/minera/logs/minera.log
+StandardError=append:/home/user/src/minera/logs/minera.log
 
 [Install]
 WantedBy=multi-user.target

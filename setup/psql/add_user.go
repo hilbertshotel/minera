@@ -7,8 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const connection_string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql" // linux
-// const connection_string = "user=postgres dbname=minera_catalog sslmode=disable" // windows
+// const connection_string = "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql" // linux
+const connection_string = "user=postgres dbname=minera_catalog sslmode=disable" // windows
 
 func main() {
 	// data

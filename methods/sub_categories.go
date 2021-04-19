@@ -1,21 +1,25 @@
 package methods
 
 import (
+	"log"
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
 	"database/sql"
-	"minera/data"
 )
 
-func GetSubCategories(db *sql.DB, writer http.ResponseWriter, categoryId int) (SubTempData, error) {
+func GetSubCategories(
+	log *log.Logger,
+	db *sql.DB,
+	catId int) (SubTempData, error) {
+	
 	var subCategoriesData SubTempData
 	
 	// query database
 	rows, err := db.Query(`SELECT id, name FROM sub_categories
-	WHERE category_id = $1 ORDER BY id ASC`, categoryId)
+	WHERE category_id = $1 ORDER BY id ASC`, catId)
 	if err != nil {
-		data.LogErr(err, writer)
+		log.Println("ERROR:", err)
 		return subCategoriesData, err
 	}
 	defer rows.Close()
@@ -25,7 +29,8 @@ func GetSubCategories(db *sql.DB, writer http.ResponseWriter, categoryId int) (S
 	for rows.Next() {
 		sub := SubCategory{}
 		err = rows.Scan(&sub.Id, &sub.Name)
-		if err != nil { data.LogErr(err, writer)
+		if err != nil {
+			log.Println("ERROR:", err)
 			return subCategoriesData, err
 		}
 		subCategories = append(subCategories, sub)
@@ -33,53 +38,77 @@ func GetSubCategories(db *sql.DB, writer http.ResponseWriter, categoryId int) (S
 
 	// get parent name
 	var categoryName string
-	err = db.QueryRow(`SELECT name FROM categories WHERE id = $1`, categoryId).Scan(&categoryName)
+	err = db.QueryRow(`SELECT name FROM categories WHERE id = $1`, catId).Scan(&categoryName)
 	if err != nil {
-		data.LogErr(err, writer)
+		log.Println("ERROR:", err)
 		return subCategoriesData, err
 	}
 
-	subCategoriesData = SubTempData{categoryId, categoryName, subCategories}
+	subCategoriesData = SubTempData{catId, categoryName, subCategories}
 	return subCategoriesData, nil
 }
 
 
-func postSubCategory(db *sql.DB, writer http.ResponseWriter, request *http.Request, categoryId int) {
+func postSubCategory(db *sql.DB, r *http.Request, log *log.Logger) error {
 	// get request data
-	var newSubCategoryName string
-	requestData, err := ioutil.ReadAll(request.Body)
-	if err != nil { data.LogErr(err, writer); return }
-	json.Unmarshal(requestData, &newSubCategoryName)
+	var newSubCategory SubCategory
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+	json.Unmarshal(request, &newSubCategory)
 	
-	// query database
+	// post data
 	_, err = db.Exec(`INSERT INTO sub_categories (category_id, name, added)
-	VALUES ($1, $2, now())`, categoryId, newSubCategoryName)
-	if err != nil { data.LogErr(err, writer) }
+	VALUES ($1, $2, now())`, newSubCategory.Id, newSubCategory.Name)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+
+	return nil
 }
 
 
-func putSubCategory(db *sql.DB, writer http.ResponseWriter, request *http.Request) {
+func putSubCategory(db *sql.DB, r *http.Request, log *log.Logger) error {
 	// get request data
 	var subCategoryData SubCategory
-	requestData, err := ioutil.ReadAll(request.Body)
-	if err != nil { data.LogErr(err, writer); return }
-	json.Unmarshal(requestData, &subCategoryData)
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+	json.Unmarshal(request, &subCategoryData)
 
-	// edit category
+	// edit data
 	_, err = db.Exec(`UPDATE sub_categories SET name = $1
 	WHERE id = $2`, subCategoryData.Name, subCategoryData.Id) 
-	if err != nil { data.LogErr(err, writer) }
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+
+	return nil
 }
 
 
-func deleteSubCategory(db *sql.DB, writer http.ResponseWriter, request *http.Request) {
+func deleteSubCategory(db *sql.DB, r *http.Request, log *log.Logger) error {
 	// get request data
 	var id int
-	requestData, err := ioutil.ReadAll(request.Body)
-	if err != nil { data.LogErr(err, writer); return }
-	json.Unmarshal(requestData, &id)
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+	json.Unmarshal(request, &id)
 	
-	// delete query
+	// delete data
 	_, err = db.Exec(`DELETE FROM sub_categories WHERE id = $1`, id) 
-	if err != nil { data.LogErr(err, writer) }
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+
+	return nil
 }

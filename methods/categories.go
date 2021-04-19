@@ -1,18 +1,18 @@
 package methods
 
 import (
+	"log"
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
 	"database/sql"
-	"minera/data"
 )
 
-func GetCategories(db *sql.DB, writer http.ResponseWriter) ([]Category, error) {
+func GetCategories(log *log.Logger, db *sql.DB) ([]Category, error) {
 	// query database
 	rows, err := db.Query("SELECT id, name FROM categories ORDER BY id ASC")
 	if err != nil {
-		data.LogErr(err, writer)
+		log.Println("ERROR:", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -23,7 +23,7 @@ func GetCategories(db *sql.DB, writer http.ResponseWriter) ([]Category, error) {
 		category := Category{}
 		err = rows.Scan(&category.Id, &category.Name)
 		if err != nil {
-			data.LogErr(err, writer)
+			log.Println("ERROR:", err)
 			return nil, err
 		}
 		categories = append(categories, category)
@@ -33,42 +33,66 @@ func GetCategories(db *sql.DB, writer http.ResponseWriter) ([]Category, error) {
 }
 
 
-func postCategory(db *sql.DB, writer http.ResponseWriter, request *http.Request) {
+func postCategory(db *sql.DB, r *http.Request, log *log.Logger) error {
 	// get request data
 	var newCategoryName string
-	requestData, err := ioutil.ReadAll(request.Body)
-	if err != nil { data.LogErr(err, writer); return }
-	json.Unmarshal(requestData, &newCategoryName)
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+	json.Unmarshal(request, &newCategoryName)
 	
-	// query database
+	// post data
 	_, err = db.Exec(`INSERT INTO categories (name, added)
 	VALUES ($1, now())`, newCategoryName)
-	if err != nil { data.LogErr(err, writer) }
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+
+	return nil
 }
 
 
-func putCategory(db *sql.DB, writer http.ResponseWriter, request *http.Request) {
+func putCategory(db *sql.DB, r *http.Request, log *log.Logger) error {
 	// get request data
 	var categoryData Category
-	requestData, err := ioutil.ReadAll(request.Body)
-	if err != nil { data.LogErr(err, writer); return }
-	json.Unmarshal(requestData, &categoryData)
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+	json.Unmarshal(request, &categoryData)
 	
 	// edit category
 	_, err = db.Exec(`UPDATE categories SET name = $1
 	WHERE id = $2`, categoryData.Name, categoryData.Id) 
-	if err != nil { data.LogErr(err, writer) }
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+
+	return nil
 }
 
 
-func deleteCategory(db *sql.DB, writer http.ResponseWriter, request *http.Request) {
+func deleteCategory(db *sql.DB, r *http.Request, log *log.Logger) error {
 	// get request data
 	var id int
-	requestData, err := ioutil.ReadAll(request.Body)
-	if err != nil { data.LogErr(err, writer); return }
-	json.Unmarshal(requestData, &id)
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+	json.Unmarshal(request, &id)
 	
-	// delete query 
+	// delete data 
 	_, err = db.Exec(`DELETE FROM categories WHERE id = $1`, id) 
-	if err != nil { data.LogErr(err, writer) }
+	if err != nil {
+		log.Println("ERROR:", err)
+		return err
+	}
+
+	return nil
 }
