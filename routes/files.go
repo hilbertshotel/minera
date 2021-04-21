@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func FileTransfer(w http.ResponseWriter, r *http.Request, log *log.Logger, imgDir string) {
+func fileTransfer(w http.ResponseWriter, r *http.Request, log *log.Logger, imgDir string) {
 	err := r.ParseMultipartForm(128 << 20)
 	if err != nil {
 		http.Error(w, "Backend Error", 502)

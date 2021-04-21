@@ -3,6 +3,7 @@ package conf
 import (
 	"os"
 	"encoding/json"
+	"time"
 )
 
 type Templates struct {
@@ -17,6 +18,8 @@ type Config struct {
 	MaxAtt int
 	ImgDir string
 	CookieName string
+	ReadTimeout time.Duration
+	WriteTimeout time.Duration
 }
 
 // initiate new config struct with default values
@@ -31,6 +34,8 @@ func NewConfig() *Config {
 		MaxAtt: 10,
 		ImgDir: "images/",
 		CookieName: "minera",
+		ReadTimeout: time.Second * 5,
+		WriteTimeout: time.Second * 5,
 	}
 }
 

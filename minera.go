@@ -8,6 +8,7 @@ import (
 	"os"
 	"minera/routes"
 	"minera/conf"
+	"database/sql"
 )
 
 func main() {
@@ -43,6 +44,17 @@ func service() error {
 	}
 
 
+	// Database connection
+	// ==================================================
+	
+	db, err := sql.Open("postgres", cfg.ConnStr)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	log.Println("database connection established")
+
+
 	// Templates
 	// ==================================================
 
@@ -59,47 +71,20 @@ func service() error {
 	log.Println("templates initiated")
 
 
-	// File Servers
-	// ==================================================
-
-	editor := http.StripPrefix("/static/editor/", http.FileServer(http.Dir("./static/editor/")))
-	http.Handle("/static/editor/", editor)
-
-	catalog := http.StripPrefix("/static/catalog/", http.FileServer(http.Dir("./static/catalog/")))
-	http.Handle("/static/catalog/", catalog)
-
-	images := http.StripPrefix("/images/", http.FileServer(http.Dir("./images/")))
-	http.Handle("/images/", images)
-
-
-	// Route Handlers
-	// ==================================================
-
-	http.Handle("/favicon.ico", http.NotFoundHandler())
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { 
-		routes.Catalog(w, r, log, cfg.ConnStr, tmpC)
-	})
-
-	http.HandleFunc("/editor/", func(w http.ResponseWriter, r *http.Request) {
-		routes.Editor(w, r, log, cfg, tmpE)
-	})
-
-	http.HandleFunc("/authentication", func(w http.ResponseWriter, r *http.Request) {
-		routes.Authentication(w, r, log, cfg)
-	})
-
-	http.HandleFunc("/files", func(w http.ResponseWriter, r *http.Request) {
-		routes.FileTransfer(w, r, log, cfg.ImgDir)
-	})
-
-	http.Handle("/minera.log", http.FileServer(http.Dir("./logs/")))
-
 	// Server
 	// ==================================================
 
-	log.Println("Now serving on " + cfg.HostAddr)
-	if err := http.ListenAndServe(cfg.HostAddr, nil); err != nil {
+	api := http.Server{
+		Addr: cfg.HostAddr,
+		Handler: routes.Mux(log, cfg, db, tmpC, tmpE),
+		ReadTimeout: cfg.ReadTimeout,
+		WriteTimeout: cfg.WriteTimeout,
+	}
+	
+	log.Println("api initiated")
+
+	log.Println("Now listening on " + cfg.HostAddr)
+	if err := api.ListenAndServe(); err != nil {
 		return err
 	}
 

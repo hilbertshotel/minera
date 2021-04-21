@@ -11,24 +11,13 @@ import (
 	"minera/conf"
 )
 
-func Editor(
+func editor(
 	w http.ResponseWriter,
 	r *http.Request,
 	log *log.Logger,
 	cfg *conf.Config,
-	tmp *template.Template) {
-
-	// Database Connection
-	// ==================================================
-
-	db, err := sql.Open("postgres", cfg.ConnStr)
-	if err != nil {
-		http.Error(w, "Backend Error", 502)
-		log.Println("ERROR:", err)
-		return
-	}
-	defer db.Close()
-
+	tmp *template.Template,
+	db *sql.DB) {
 
 	// Validation
 	// ==================================================

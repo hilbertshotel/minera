@@ -10,24 +10,13 @@ import (
 	"minera/methods"
 )
 
-func Catalog(
+func catalog(
 	w http.ResponseWriter,
 	r *http.Request,
 	log *log.Logger,
 	conn string,
-	tmp *template.Template) {
-
-	// Database Connection
-	// ==================================================
-
-	db, err := sql.Open("postgres", conn)
-	if err != nil {
-		http.Error(w, "Backend Error", 502)
-		log.Println("ERROR:", err)
-		return	
-	}
-	defer db.Close()
-	
+	tmp *template.Template,
+	db *sql.DB) {
 
 	// Handle Categories
 	// ==================================================

@@ -17,11 +17,12 @@ type Credentials struct {
 	Password string `json:password`
 }
 
-func Authentication(
+func authentication(
 	w http.ResponseWriter,
 	r *http.Request,
 	log *log.Logger,
-	cfg *conf.Config) {
+	cfg *conf.Config,
+	db *sql.DB) {
 
 	// parse request
 	var userData Credentials
@@ -32,15 +33,6 @@ func Authentication(
 		return
 	}
 	json.Unmarshal(request, &userData)
-
-	// connect to database
-	db, err := sql.Open("postgres", cfg.ConnStr)
-	if err != nil {
-		http.Error(w, "Backend Error", 502)
-		log.Println("ERROR:", err)
-		return
-	}
-	defer db.Close()
 
 	// validate username
 	var username string
