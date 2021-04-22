@@ -29,7 +29,7 @@ func catalog(
 			http.Error(w, "Backend Error", 502)
 			return
 		}
-		
+       
 		if err := tmp.ExecuteTemplate(w, "categories.html", categories); err != nil {
 			http.Error(w, "Backend Error", 502)
 			log.Println("ERROR:", err)

@@ -1,5 +1,5 @@
-const IP = "http://127.0.0.1:5252" // development
-// const IP = "https://catalog.minera.bg" // production
+// const IP = "http://127.0.0.1:5252" // development
+const IP = "https://catalog.minera.bg" // production
 
 const output = document.getElementById("output")
 

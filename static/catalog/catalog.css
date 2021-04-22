@@ -1,5 +1,5 @@
-@import url('https://fonts.cdnfonts.com/css/bahnschrift');
-
+/* @import url('https://fonts.cdnfonts.com/css/bahnschrift');
+*/
 body {
     margin: 0;
     min-height: 100vh;
@@ -30,7 +30,8 @@ body {
     color: #f1f9f1;
     margin: 0;
     font-weight: normal;
-    font-family: 'Bahnschrift', sans-serif;
+    /*font-family: 'Bahnschrift', sans-serif;*/
+    font-family: 'Roboto', sans-serif;
     text-shadow: 0.5px 0.5px 0.5px #353535;
     font-size: 35px;
 }
@@ -54,34 +55,36 @@ body {
     appearance: button;
     display: block;
     padding: 0.4em;
-    margin: 0.4em;
+    margin: 0.5rem;
     background: linear-gradient(
         to right bottom,
-        rgba(241, 249, 241, 0.7),
-        rgba(241, 249, 241, 0.3)
+        rgba(241, 249, 241, 0.6),
+        rgba(241, 249, 241, 0.25)
     );
-    color: #3c795c;
-    font-family: 'Bahnschrift', sans-serif;
+    color: #353535;
+    font-family: 'Roboto', sans-serif;
     text-shadow: 0.5px 0.5px 0.5px #f1f9f1;
-    font-size: 30px;
+    font-size: 1.4rem;
     text-align: center;
-    border-radius: 10px;
+    font-weight: 500;
+    border-radius: 0.3rem;
     border-style: solid;
     border-width: 1px;
-    border-color: #f1f9f1;
+    border-color: #353535;
     user-select: none;
 }
 
 .category:hover {
     cursor: pointer;
     animation-name: category_hover;
-    animation-duration: 0.2s;
+    animation-duration: 0.3s;
     animation-timing-function: ease-in;
     animation-fill-mode: forwards;
 }
 
 @keyframes category_hover {
-    100% { background-color:rgba(241, 249, 241, 0.3) }
+    0% { border-color: #f1f9f1; }
+    100% { background-color:rgba(241, 249, 241, 0.5) }
 }
 
 /***** products *****/
@@ -89,7 +92,7 @@ body {
     color: #f1f9f1;
     font-weight: normal;
     margin-bottom: 0.3em;
-    font-family: 'Bahnschrift', sans-serif;
+    font-family: 'Roboto', sans-serif;
     text-shadow: 0.5px 0.5px 0.5px #353535;
 }
 
@@ -133,10 +136,9 @@ body {
 }
 
 .footer > a {
-    color: #f1f9f1;
-    text-shadow: 0.5px 0.5px 0.5px #353535;
-    font-family: 'Bahnschrift', sans-serif;
-    font-size: 20px;
+    color: #353535;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
     text-decoration: none;
 }
 
