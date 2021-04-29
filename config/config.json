@@ -1,5 +1,5 @@
 {
-    "ConnStr": "user=postgres dbname=minera_catalog sslmode=disable",
+    "ConnStr": "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql",
     "HostAddr": "127.0.0.1:5252",
     "Tmp": {
         "Editor": "templates/editor/*",
