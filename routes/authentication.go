@@ -9,7 +9,7 @@ import (
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/satori/go.uuid"
-	"minera/conf"
+	"minera/config"
 )
 
 type Credentials struct {
@@ -21,7 +21,7 @@ func authentication(
 	w http.ResponseWriter,
 	r *http.Request,
 	log *log.Logger,
-	cfg *conf.Config,
+	cfg *config.Config,
 	db *sql.DB) {
 
 	// parse request

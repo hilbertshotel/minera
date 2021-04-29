@@ -4,8 +4,10 @@
     
     {{range .Products}}
 
-    <h1>{{.Name}}</h1>
-    <pre>{{.Description}}</pre>
+    <div class="product">
+
+        <h3>{{.Name}}</h3>
+        <pre>{{.Description}}</pre>
     
         <div class="images">
             {{range .Images}}
@@ -13,9 +15,9 @@
             {{end}}
         </div>
 
-    {{end}}
+    </div>
 
-    <button id="backButton" onclick="goBack()">ОБРАТНО</button>
+    {{end}}
 
 </div>
 

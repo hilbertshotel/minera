@@ -1,4 +1,4 @@
-package conf
+package config
 
 import (
 	"os"
@@ -23,7 +23,7 @@ type Config struct {
 }
 
 // initiate new config struct with default values
-func NewConfig() *Config {
+func New() *Config {
 	return &Config{
 		ConnStr: "user=postgres dbname=minera_catalog sslmode=disable host=/run/postgresql",
 		HostAddr: "127.0.0.1:5252",
@@ -34,22 +34,21 @@ func NewConfig() *Config {
 		MaxAtt: 10,
 		ImgDir: "images/",
 		CookieName: "minera",
-		ReadTimeout: time.Second * 5,
-		WriteTimeout: time.Second * 5,
+		ReadTimeout: time.Second * 10,
+		WriteTimeout: time.Second * 10,
 	}
 }
 
 // parse config file into config struct
 func (cfg *Config) Parse() error {
-	file, err := os.Open("conf/config.json")
+	file, err := os.Open("config/config.json")
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&cfg)
-	if err != nil {
+	if err := decoder.Decode(&cfg);err != nil {
 		return err
 	}
 

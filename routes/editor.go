@@ -8,14 +8,14 @@ import (
 	"database/sql"
 	"html/template"
 	"minera/methods"
-	"minera/conf"
+	"minera/config"
 )
 
 func editor(
 	w http.ResponseWriter,
 	r *http.Request,
 	log *log.Logger,
-	cfg *conf.Config,
+	cfg *config.Config,
 	tmp *template.Template,
 	db *sql.DB) {
 

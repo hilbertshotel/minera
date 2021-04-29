@@ -1,44 +1,50 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"html/template"
 	"os"
-	"minera/routes"
-	"minera/conf"
 	"database/sql"
+	"syscall"
+	"os/signal"
+
+	"minera/routes"
+	"minera/config"
 )
 
 func main() {
+
 	if err := service(); err != nil {
 		log.Println("ERROR:", err)
-		log.Println("service shutting down due to fatal error")
+		log.Println("SERVICE STOP\n")
 		os.Exit(1)
+	} else {
+		log.Println("SERVICE STOP\n")
+		os.Exit(0)
 	}
+
 }
 
 func service() error {
 
-	fmt.Println()
-	log.Println(": SERVICE START")
-
-	
 	// Logging
 	// ==================================================
 
 	log := log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
+
+	log.Println("SERVICE START")
 	log.Println("logging initiated")
 
 
 	// Configuration
 	// ==================================================
 
-	cfg := conf.NewConfig()
+	cfg := config.New()
+
 	if err := cfg.Parse(); err != nil {
 		log.Println("ERROR:", err)
-		log.Println("config init failed - using default values")
+		log.Println("config parsing failed: loading default values")
 	} else {
 		log.Println("config initiated")
 	}
@@ -51,7 +57,10 @@ func service() error {
 	if err != nil {
 		return err
 	}
+
+	defer log.Println("closing database connection")
 	defer db.Close()
+
 	log.Println("database connection established")
 
 
@@ -71,7 +80,18 @@ func service() error {
 	log.Println("templates initiated")
 
 
-	// Server
+	// Channels
+	// ==================================================
+
+	shutdown := make(chan os.Signal, 1)
+	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
+	
+	serverError := make(chan error, 1)
+
+	log.Println("channels initiated")
+
+
+	// Api
 	// ==================================================
 
 	api := http.Server{
@@ -83,11 +103,28 @@ func service() error {
 	
 	log.Println("api initiated")
 
-	log.Println("Now listening on " + cfg.HostAddr)
-	if err := api.ListenAndServe(); err != nil {
+
+	// Server
+	// ==================================================
+
+	go func() {
+		log.Println("service listening on", cfg.HostAddr)
+		serverError <- api.ListenAndServe()
+	}()
+
+
+	// Shutdown
+	// ==================================================
+	
+	select {
+
+	case <-shutdown:
+		log.Println("SHUTDOWN initiated")
+		return nil
+
+	case err := <-serverError:
 		return err
+
 	}
 
-	
-	return nil
 }

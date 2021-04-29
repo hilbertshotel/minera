@@ -6,14 +6,15 @@ use instructions:
 UML
 
 analytics
-telemetry
 
-BIN TO CLEAR DATA:
+CLEANUP SERVICE:
     - sessions
     - log
     - image folder according to image arrays in database
 
-BACKUP:
+BACKUP SERVICE:
     - DB
     - images folder
     - /etc/letsencrypt
+
+FIX HTTP not loading page???

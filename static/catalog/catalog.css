@@ -1,112 +1,71 @@
-/* @import url('https://fonts.cdnfonts.com/css/bahnschrift');
-*/
 body {
     margin: 0;
-    min-height: 100vh;
-    background: linear-gradient(to right top, #6cc06f, #6cc0a7);
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.mainWindow {
-    display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-    grid-gap: 1em;
-}
-
-/***** HEADER DIV *****/
-.header {
     text-align: center;
-    grid-column: 1/4;
+    font-family: 'Work Sans', sans-serif;
+    background-color: #f1f9f1;
+    color: #353535;
+}
+
+a {
+    display: block;
+    color: #353535;
+    text-decoration: none;
+}
+
+
+/***** HEADER *****/
+.header {
+    padding: 1rem;
+    background-color: rgba(108, 192, 111, 1);
 }
 
 .header > h1 {
-    color: #076031;
     margin: 0;
-    font-family: Arial Black, Gadget, sans-serif;
-    font-size: 70px;
+    color: #f1f9f1;
+    font-size: 4rem;
 }
 
 .header > h3 {
-    color: #f1f9f1;
+    font-size: 1.5rem;
     margin: 0;
-    font-weight: normal;
-    /*font-family: 'Bahnschrift', sans-serif;*/
-    font-family: 'Roboto', sans-serif;
-    text-shadow: 0.5px 0.5px 0.5px #353535;
-    font-size: 35px;
 }
 
-.header > hr {
-    margin-top: 1em;
-    border: none;
-    background-color: #f1f9f1;
-    height: 1px;
-}
 
-/***** CONTENT DIV *****/
+/***** CONTENT *****/
 .content {
-    margin-left: 1em;
-    margin-right: 1em;
+    padding: 1.5rem;
 }
 
-/***** categories *****/
 .category {
-    text-decoration: none;
-    appearance: button;
-    display: block;
-    padding: 0.4em;
-    margin: 0.5rem;
-    background: linear-gradient(
-        to right bottom,
-        rgba(241, 249, 241, 0.6),
-        rgba(241, 249, 241, 0.25)
-    );
-    color: #353535;
-    font-family: 'Roboto', sans-serif;
-    text-shadow: 0.5px 0.5px 0.5px #f1f9f1;
+    margin: 0.32rem;
+    padding: 0.53rem;
     font-size: 1.4rem;
-    text-align: center;
-    font-weight: 500;
-    border-radius: 0.3rem;
-    border-style: solid;
-    border-width: 1px;
-    border-color: #353535;
-    user-select: none;
+    border-radius: 0.2rem;
+    background-color: rgba(108, 192, 111, 0.13);
 }
 
 .category:hover {
-    cursor: pointer;
-    animation-name: category_hover;
-    animation-duration: 0.3s;
-    animation-timing-function: ease-in;
-    animation-fill-mode: forwards;
+    background-color: rgba(108, 192, 111, 0.3);
 }
 
-@keyframes category_hover {
-    0% { border-color: #f1f9f1; }
-    100% { background-color:rgba(241, 249, 241, 0.5) }
+.product {
+    text-align: left;
+    margin-bottom: 1rem;
 }
 
-/***** products *****/
-.content > h1 {
-    color: #f1f9f1;
-    font-weight: normal;
-    margin-bottom: 0.3em;
-    font-family: 'Roboto', sans-serif;
-    text-shadow: 0.5px 0.5px 0.5px #353535;
+.product > h3 {
+    margin: 0rem;
+    padding: 0.5rem;
+    font-size: 1.6rem;
+    border-radius: 0.2rem;
+    background-color: rgba(108, 192, 111, 0.13);
 }
 
-.content > pre {
+.product > pre {
     white-space: pre-wrap;
-    text-align: justify;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Work Sans', sans-serif;
     color: #353535;
-    margin-top: 0;
-    font-size: 20px;
-}
-
-.images {
-    margin-bottom: 1em;
+    font-size: 1.1rem;
 }
 
 .images > img {
@@ -115,60 +74,22 @@ body {
     margin-bottom: 0.5em;
     border-style: solid;
     border-color: #353535;
-    border-width: 1.5px;
+    border-width: 0.05rem;
     width: 250px;
     height: 250px;
-    
 }
 
-/***** FOOTER DIV *****/
+
+/***** FOOTER *****/
 .footer {
-    text-align: center;
-    grid-column: 1/4;
-    margin-bottom: 6em;
+    margin-bottom: 2rem;
 }
 
 .footer > hr {
-    margin-bottom: 1em;
+    background-color: rgba(108, 192, 111, 0.7);
+    height: 0.05rem;
+    width: 40%;
+    margin: auto;
     border: none;
-    background-color: #f1f9f1;
-    height: 1px;
-}
-
-.footer > a {
-    color: #353535;
-    font-family: 'Roboto', sans-serif;
-    font-size: 1rem;
-    text-decoration: none;
-}
-
-/***** BACK BUTTON *****/
-#backButton {
-    background:rgba(241, 249, 241, 0.3);
-    color: #f1f9f1;
-    font-size: 30px;
-    font-weight: bold;
-    text-shadow: 0.5px 0.5px 0.5px #353535;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    position: fixed;
-    border: none;
-    outline: none;
-    padding: 0.5em;
-    border-top-style: solid;
-    border-top-color: #f1f9f1;
-    border-top-width: 1.5px;
-}
-
-#backButton:hover {
-    cursor: pointer;
-    animation-name: button_hover;
-    animation-duration: 0.2s;
-    animation-timing-function: ease-in;
-    animation-fill-mode: forwards;
-}
-
-@keyframes button_hover {
-    100% { background-color:rgba(241, 249, 241, 0.5); }
+    margin-bottom: 0.5rem;
 }

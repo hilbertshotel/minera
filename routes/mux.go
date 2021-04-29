@@ -2,7 +2,7 @@ package routes
 
 import (
 	"net/http"
-	"minera/conf"
+	"minera/config"
 	"database/sql"
 	"html/template"
 	"log"
@@ -10,7 +10,7 @@ import (
 
 func Mux(
 	log *log.Logger,
-	cfg *conf.Config,
+	cfg *config.Config,
 	db *sql.DB,
 	tmpC *template.Template,
 	tmpE *template.Template) *http.ServeMux {
